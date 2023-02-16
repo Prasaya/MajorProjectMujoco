@@ -1,0 +1,6 @@
+[submodule "dm_control_source"]
+	path = dm_control_source
+	url = git@github.com:Prasaya/dm_control.git
+[submodule "MoCapAct_source"]
+	path = MoCapAct_source
+	url = git@github.com:Prasaya/MoCapAct.git
