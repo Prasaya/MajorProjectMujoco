@@ -1,0 +1,3 @@
+
+# Run wall with go_to_target
+python src/examples/evaluate.py --model_root transfer/go_to_target/locomotion_low_level --task 'MoCapAct_source/mocapact/transfer/config.py:go_to_target'

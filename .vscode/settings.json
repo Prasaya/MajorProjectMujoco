@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./dm_control_source"
+    ]
+}
