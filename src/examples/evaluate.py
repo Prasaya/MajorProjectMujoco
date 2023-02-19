@@ -23,7 +23,7 @@ flags.DEFINE_integer("episode_steps", 833, "Number of time steps in an episode")
 
 # Visualization hyperparameters
 flags.DEFINE_bool("visualize", True, "Whether to visualize via GUI")
-flags.DEFINE_bool("big_arena", False, "Whether to use a bigger arena for visualization")
+flags.DEFINE_bool("big_arena", True, "Whether to use a bigger arena for visualization")
 
 # Evaluation hyperparameters
 flags.DEFINE_integer("n_eval_episodes", 0, "Number of episodes to numerically evaluate policy")

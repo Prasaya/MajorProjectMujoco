@@ -14,10 +14,12 @@ from mocapact.sb3 import utils
 from mocapact.envs import dm_control_wrapper
 from mocapact.distillation import model
 
+from obstacles import Obstacles
+
 FLAGS = flags.FLAGS
 flags.DEFINE_string("model_root", "transfer/go_to_target/locomotion_low_level", "Directory where policy is stored")
 flags.DEFINE_float("max_embed", 3., "Maximum embed")
-task_file = "src/transfer/config.py"
+task_file = "src/follow_target/config.py"
 config_flags.DEFINE_config_file("task", f"{task_file}:go_to_target", "Task")
 flags.DEFINE_integer("episode_steps", 833, "Number of time steps in an episode")
 
@@ -44,6 +46,7 @@ def main(_):
     task_kwargs = dict(
         physics_timestep=tracking.DEFAULT_PHYSICS_TIMESTEP,
         control_timestep=CONTROL_TIMESTEP,
+        obstacles=Obstacles(),
         **FLAGS.task.config
     )
     environment_kwargs = dict(
