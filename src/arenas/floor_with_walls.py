@@ -8,7 +8,7 @@ import numpy as np
 _GROUNDPLANE_QUAD_SIZE = 0.25
 
 
-class Walls(composer.Arena):
+class FloorWithWalls(composer.Arena):
 
   def _build(self, size=(100, 100), reflectance=.2, aesthetic='default',
              name='floor', top_camera_y_padding_factor=1.1,

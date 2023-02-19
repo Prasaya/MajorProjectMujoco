@@ -34,7 +34,6 @@ flags.DEFINE_integer("seed", 0, "RNG seed")
 flags.DEFINE_string("save_path", None, "If desired, the path to save the evaluation results")
 flags.DEFINE_string("device", "auto", "Device to run evaluation on")
 
-# flags.mark_flag_as_required("model_root")
 
 logging.set_verbosity(logging.WARNING)
 
@@ -55,7 +54,8 @@ def main(_):
     env = env_ctor(
         task_kwargs=task_kwargs,
         environment_kwargs=environment_kwargs,
-        arena_size=arena_size
+        arena_size=arena_size,
+        use_walls=True,
     )
 
     # Set up model
