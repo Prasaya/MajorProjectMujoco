@@ -15,9 +15,9 @@ from mocapact.envs import dm_control_wrapper
 from mocapact.distillation import model
 
 FLAGS = flags.FLAGS
-flags.DEFINE_string("model_root", None, "Directory where policy is stored")
+flags.DEFINE_string("model_root", "transfer/go_to_target/locomotion_low_level", "Directory where policy is stored")
 flags.DEFINE_float("max_embed", 3., "Maximum embed")
-task_file = "mocapact/transfer/config.py"
+task_file = "MoCapAct_source/mocapact/transfer/config.py"
 config_flags.DEFINE_config_file("task", f"{task_file}:go_to_target", "Task")
 flags.DEFINE_integer("episode_steps", 833, "Number of time steps in an episode")
 
