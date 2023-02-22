@@ -3,7 +3,7 @@ Configs for the training script. Uses the ml_collections config library.
 """
 from ml_collections import ConfigDict
 from mocapact.tasks import velocity_control
-from mocapact.tasks import go_to_target
+import go_to_target
 
 def get_config(task_string):
     tasks = {

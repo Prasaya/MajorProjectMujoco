@@ -17,23 +17,30 @@ from mocapact.distillation import model
 from obstacles import Obstacles
 
 FLAGS = flags.FLAGS
-flags.DEFINE_string("model_root", "transfer/go_to_target/locomotion_low_level", "Directory where policy is stored")
+flags.DEFINE_string("model_root", "transfer/go_to_target/locomotion_low_level",
+                    "Directory where policy is stored")
 flags.DEFINE_float("max_embed", 3., "Maximum embed")
-task_file = "src/follow_target/config.py"
+task_file = "ZirconProject/follow_target/config.py"
 config_flags.DEFINE_config_file("task", f"{task_file}:go_to_target", "Task")
-flags.DEFINE_integer("episode_steps", 833, "Number of time steps in an episode")
+flags.DEFINE_integer("episode_steps", 833,
+                     "Number of time steps in an episode")
 
 # Visualization hyperparameters
 flags.DEFINE_bool("visualize", True, "Whether to visualize via GUI")
-flags.DEFINE_bool("big_arena", True, "Whether to use a bigger arena for visualization")
+flags.DEFINE_bool("big_arena", True,
+                  "Whether to use a bigger arena for visualization")
 
 # Evaluation hyperparameters
-flags.DEFINE_integer("n_eval_episodes", 0, "Number of episodes to numerically evaluate policy")
+flags.DEFINE_integer("n_eval_episodes", 0,
+                     "Number of episodes to numerically evaluate policy")
 flags.DEFINE_integer("n_workers", 1, "Number of parallel workers")
-flags.DEFINE_bool("always_init_at_clip_start", False, "Whether to initialize at beginning or random point in clip")
-flags.DEFINE_float("termination_error_threshold", 0.3, "Error for cutting off expert rollout")
+flags.DEFINE_bool("always_init_at_clip_start", False,
+                  "Whether to initialize at beginning or random point in clip")
+flags.DEFINE_float("termination_error_threshold", 0.3,
+                   "Error for cutting off expert rollout")
 flags.DEFINE_integer("seed", 0, "RNG seed")
-flags.DEFINE_string("save_path", None, "If desired, the path to save the evaluation results")
+flags.DEFINE_string("save_path", None,
+                    "If desired, the path to save the evaluation results")
 flags.DEFINE_string("device", "auto", "Device to run evaluation on")
 
 
@@ -41,8 +48,10 @@ logging.set_verbosity(logging.WARNING)
 
 CONTROL_TIMESTEP = 0.03
 
+
 def main(_):
-    env_ctor = dm_control_wrapper.DmControlWrapper.make_env_constructor(FLAGS.task.constructor)
+    env_ctor = dm_control_wrapper.DmControlWrapper.make_env_constructor(
+        FLAGS.task.constructor)
     task_kwargs = dict(
         physics_timestep=tracking.DEFAULT_PHYSICS_TIMESTEP,
         control_timestep=CONTROL_TIMESTEP,
@@ -93,8 +102,10 @@ def main(_):
         return action
 
     if FLAGS.visualize:
-        viewer_app = application.Application(title='Humanoid Task', width=1024, height=768)
+        viewer_app = application.Application(
+            title='Humanoid Task', width=1024, height=768)
         viewer_app.launch(environment_loader=env.dm_env, policy=policy_fn)
+
 
 if __name__ == '__main__':
     app.run(main)
