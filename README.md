@@ -9,8 +9,8 @@ Run the following script to clone the repository, update the submodules, and ins
 ```bash
 #!/bin/bash
 
-$destinationFolder = "MajorProjectMujoco";
-$envName="ZirconProject"
+destinationFolder="MajorProjectMujoco";
+envName="ZirconProject"
 
 # Clone the repository if not already present
 if [[ -d $destinationFolder ]];
