@@ -86,6 +86,13 @@ class GoToTarget(composer.Task):
       self._target_spawn_position = target_spawn_position
     else:
       self._target_spawn_position = arena_position
+    # Changed here
+    self.target_list = [ [5, -3], [10, -5.3], [15, 0.5], [20, 1.25], [23, 0], [25, -2.5], [27.5, -4.0], [30, -5.0], [35, 0.5], [40, 1.5] ]
+    self.target_index = 0
+    # self._target_spawn_position = [2, 0]
+    
+    self._target_spawn_position = self.target_list[self.target_index]
+    self.target_index += 1
 
     if walker_spawn_position is not None:
       self._walker_spawn_position = walker_spawn_position
@@ -212,8 +219,12 @@ class GoToTarget(composer.Task):
         target_x += walker_pos[0]
         target_y += walker_pos[1]
       else:
+        if self.target_index < len(self.target_list):
+          self._target_spawn_position = self.target_list[self.target_index]
+          self.target_index += 1
         target_x, target_y = variation.evaluate(
             self._target_spawn_position, random_state=random_state)
+        
       physics.bind(self._target).pos = [target_x, target_y, 0.]
 
       # Reset the number of steps at the target for the moving target.
