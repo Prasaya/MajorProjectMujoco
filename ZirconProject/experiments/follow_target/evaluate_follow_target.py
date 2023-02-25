@@ -11,7 +11,7 @@ from dm_control.viewer import application
 from dm_control.locomotion.tasks.reference_pose import tracking
 from stable_baselines3.common.utils import obs_as_tensor
 from mocapact.sb3 import utils
-from mocapact.envs import dm_control_wrapper
+from envs import dm_control_wrapper
 from mocapact.distillation import model
 
 from obstacles import Obstacles
@@ -20,7 +20,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string("model_root", "transfer/go_to_target/locomotion_low_level",
                     "Directory where policy is stored")
 flags.DEFINE_float("max_embed", 3., "Maximum embed")
-task_file = "ZirconProject/follow_target/config.py"
+task_file = "ZirconProject/experiments/follow_target/config.py"
 config_flags.DEFINE_config_file("task", f"{task_file}:go_to_target", "Task")
 flags.DEFINE_integer("episode_steps", 833,
                      "Number of time steps in an episode")
