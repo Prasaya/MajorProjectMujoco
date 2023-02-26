@@ -17,6 +17,7 @@ from dm_control import composer
 # from dm_control.locomotion.arenas import floors, floor_with_walls
 from dm_control.locomotion.arenas import floors
 from .arenas import floor_with_walls
+from .arenas import floor_with_mesh
 from dm_control.locomotion.mocap import cmu_mocap_data
 from dm_control.locomotion.mocap import loader
 from dm_control.locomotion.tasks.reference_pose import tracking
@@ -170,7 +171,7 @@ class DmControlWrapper(core.Env):
 
     def _get_arena(self, arena_size):
         if self.use_walls:
-            return floor_with_walls.FloorWithWalls(arena_size)
+            return floor_with_mesh.FloorWithMesh(arena_size)
         return floors.Floor(arena_size)
 
     def _create_observation_space(self) -> spaces.Dict:
