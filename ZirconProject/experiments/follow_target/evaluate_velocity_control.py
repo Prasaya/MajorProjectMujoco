@@ -64,7 +64,7 @@ def main(_):
         time_limit=CONTROL_TIMESTEP*FLAGS.episode_steps,
         random_state=FLAGS.seed
     )
-    arena_size = (50., 50.) if FLAGS.big_arena else (8., 8.)
+    arena_size = (100., 100.) if FLAGS.big_arena else (8., 8.)
     env = env_ctor(
         task_kwargs=task_kwargs,
         environment_kwargs=environment_kwargs,
