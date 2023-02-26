@@ -6,6 +6,7 @@ import numpy as np
 from dm_control import composer
 from dm_control.composer.observation import observable as dm_observable
 from dm_control.locomotion.tasks.reference_pose import tracking
+from dm_control.mjcf import Physics
 
 
 class VelocityControl(composer.Task):
@@ -24,6 +25,7 @@ class VelocityControl(composer.Task):
         physics_timestep=tracking.DEFAULT_PHYSICS_TIMESTEP,
         control_timestep=0.03,
         obstacles=None,
+        points_to_visit=[]
     ):
         self._obstacles = obstacles
         self._walker = walker
@@ -60,6 +62,8 @@ class VelocityControl(composer.Task):
 
         self.set_timesteps(physics_timestep=physics_timestep,
                            control_timestep=control_timestep)
+
+        self.points_to_visit = points_to_visit
         self.dir_index = 0
 
     @property
@@ -75,21 +79,32 @@ class VelocityControl(composer.Task):
         return ((contact.geom1 in set1 and contact.geom2 in set2) or
                 (contact.geom1 in set2 and contact.geom2 in set1))
 
-    def _sample_move_speed(self, random_state):
+    def _sample_move_speed(self, random_state, physics):
+        # Static directions (steps_before_changing_velocity=50 in config.py)
         source = 0
-        # self.dir_index = 1
-        # dir = [1.75*np.pi, 0.25*np.pi, 0*np.pi, 0.75*np.pi, 1*np.pi, 1.25*np.pi, 1.5*np.pi, 1.75*np.pi, 2*np.pi]
         dir = [np.pi*1.5, 0, 0, np.pi*1/6, 0, 0, 0, 0, np.pi*5/3, np.pi*11/6, 0, 0, np.pi*5/12, np.pi*1/3, np.pi*0.105, 
                np.pi*35/18, np.pi*11/6, np.pi*1/4, np.pi*1/4, np.pi*1/6, np.pi*7/4, 0]
-        # dir = [1.75*np.pi, 0, 0.55206, 0.0209,
-        #        0.0209, 0.0209, 0.0209, 0.25 * np.pi, 0, 1.75 * np.pi]
-
         if(self.dir_index < len(dir)):
             source = dir[self.dir_index]
             self.dir_index += 1
         else:
             source = dir[-1]
         # print("Changing source to ", source)
+    
+        # Dynamic direction
+        agent_pos = physics.named.data.xpos['walker/root']
+        agent_pos = np.array([agent_pos[0], agent_pos[1]])
+        required_pos = self.points_to_visit[0]
+        for pos in self.points_to_visit:
+            if pos[0] > agent_pos[0]:
+                required_pos = pos
+                break
+        source = np.arctan2(
+            required_pos[1] - agent_pos[1], required_pos[0] - agent_pos[0])
+        if source < 0:
+            source += 2*np.pi
+        print("Changing source to", np.rad2deg(source), "for moving to",
+              required_pos, "from", agent_pos)
 
         # self._move_speed = random_state.uniform(high=self._max_speed)
         # self._move_angle = random_state.uniform(high=2*np.pi)
@@ -110,7 +125,7 @@ class VelocityControl(composer.Task):
 
     def initialize_episode(self, physics, random_state):
         self._walker.reinitialize_pose(physics, random_state)
-        self._sample_move_speed(random_state)
+        self._sample_move_speed(random_state, physics)
 
         self._failure_termination = False
         walker_foot_geoms = set(self._walker.ground_contact_geoms)
@@ -122,11 +137,11 @@ class VelocityControl(composer.Task):
             physics.bind(walker_nonfoot_geoms).element_id)
         self._ground_geomids = set(physics.bind(
             self._arena.ground_geoms).element_id)
-        
+
         rotation = 0.5 * np.pi
         quat = [np.cos(rotation / 2), 0, 0, np.sin(rotation / 2)]
         walker_x, walker_y = 0, 0
-        
+
         self._walker.shift_pose(
             physics,
             position=[walker_x, walker_y, 0.],
@@ -164,4 +179,4 @@ class VelocityControl(composer.Task):
 
         self._move_speed_counter += 1
         if self._move_speed_counter >= self._steps_before_changing_velocity:
-            self._sample_move_speed(random_state)
+            self._sample_move_speed(random_state, physics)
