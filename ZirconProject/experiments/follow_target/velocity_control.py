@@ -7,6 +7,7 @@ from dm_control import composer
 from dm_control.composer.observation import observable as dm_observable
 from dm_control.locomotion.tasks.reference_pose import tracking
 
+
 class VelocityControl(composer.Task):
     """
     A task that requires the walker to track a randomly changing velocity.
@@ -35,14 +36,16 @@ class VelocityControl(composer.Task):
         self._move_speed = 0.
         self._move_angle = 0.
         self._move_speed_counter = 0.
-        
+
         self._task_observables = collections.OrderedDict()
+
         def task_state(physics):
             del physics
             sin, cos = np.sin(self._move_angle), np.cos(self._move_angle)
             phase = self._move_speed_counter / self._steps_before_changing_velocity
             return np.array([self._move_speed, sin, cos, phase])
-        self._task_observables['target_obs'] = dm_observable.Generic(task_state)
+        self._task_observables['target_obs'] = dm_observable.Generic(
+            task_state)
 
         enabled_observables = []
         enabled_observables += self._walker.observables.proprioception
@@ -55,9 +58,10 @@ class VelocityControl(composer.Task):
         for obs in enabled_observables:
             obs.enabled = True
 
-        self.set_timesteps(physics_timestep=physics_timestep, control_timestep=control_timestep)
+        self.set_timesteps(physics_timestep=physics_timestep,
+                           control_timestep=control_timestep)
         self.dir_index = 0
-        
+
     @property
     def root_entity(self):
         return self._arena
@@ -75,8 +79,9 @@ class VelocityControl(composer.Task):
         source = 0
         # self.dir_index = 1
         # dir = [1.75*np.pi, 0.25*np.pi, 0*np.pi, 0.75*np.pi, 1*np.pi, 1.25*np.pi, 1.5*np.pi, 1.75*np.pi, 2*np.pi]
-        dir = [1.75*np.pi, 0, 0.55206, 0.0209]
-        
+        dir = [1.75*np.pi, 0, 0.55206, 0.0209,
+               0.0209, 0.0209, 0.0209, 0.25 * np.pi, 0, 1.75 * np.pi]
+
         if(self.dir_index < len(dir)):
             source = dir[self.dir_index]
             self.dir_index += 1
@@ -84,13 +89,11 @@ class VelocityControl(composer.Task):
             source = dir[-1]
         print("Changing source to ", source)
 
-
         # self._move_speed = random_state.uniform(high=self._max_speed)
         # self._move_angle = random_state.uniform(high=2*np.pi)
         self._move_speed = 2
         self._move_angle = source
         self._move_speed_counter = 0
-        
 
     def should_terminate_episode(self, physics):
         del physics
@@ -113,8 +116,10 @@ class VelocityControl(composer.Task):
             geom for geom in self._walker.mjcf_model.find_all('geom')
             if geom not in walker_foot_geoms
         ]
-        self._walker_nonfoot_geomids = set(physics.bind(walker_nonfoot_geoms).element_id)
-        self._ground_geomids = set(physics.bind(self._arena.ground_geoms).element_id)
+        self._walker_nonfoot_geomids = set(
+            physics.bind(walker_nonfoot_geoms).element_id)
+        self._ground_geomids = set(physics.bind(
+            self._arena.ground_geoms).element_id)
 
     def get_reward(self, physics):
         xvel = self._walker.observables.torso_xvel(physics)
@@ -127,7 +132,8 @@ class VelocityControl(composer.Task):
         else:
             direction = np.array([xvel, yvel])
             direction /= np.linalg.norm(direction)
-            direction_tgt = np.array([np.cos(self._move_angle), np.sin(self._move_angle)])
+            direction_tgt = np.array(
+                [np.cos(self._move_angle), np.sin(self._move_angle)])
             dot = direction_tgt.dot(direction)
             angle_reward = ((dot + 1) / 2)**self._direction_exponent
 
@@ -136,7 +142,7 @@ class VelocityControl(composer.Task):
 
     def before_step(self, physics, action, random_state):
         self._walker.apply_action(physics, action, random_state)
-    
+
     def after_step(self, physics, random_state):
         self._failure_termination = False
         for contact in physics.data.contact:

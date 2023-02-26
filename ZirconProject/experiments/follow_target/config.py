@@ -5,6 +5,7 @@ from ml_collections import ConfigDict
 from go_to_target import GoToTarget
 import velocity_control
 
+
 def get_config(task_string):
     tasks = {
         'go_to_target': ConfigDict({
@@ -19,7 +20,7 @@ def get_config(task_string):
                 max_speed=4.5,
                 reward_margin=0.75,
                 direction_exponent=1.,
-                steps_before_changing_velocity=166
+                steps_before_changing_velocity=83
             ))
         })
     }

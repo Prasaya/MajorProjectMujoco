@@ -15,13 +15,15 @@ from envs import dm_control_wrapper
 from mocapact.distillation import model
 
 from obstacles import Obstacles
+from dm_control import viewer
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("model_root", "transfer/velocity_control/locomotion_low_level",
                     "Directory where policy is stored")
 flags.DEFINE_float("max_embed", 3., "Maximum embed")
 task_file = "ZirconProject/experiments/follow_target/config.py"
-config_flags.DEFINE_config_file("task", f"{task_file}:velocity_control", "Task")
+config_flags.DEFINE_config_file(
+    "task", f"{task_file}:velocity_control", "Task")
 flags.DEFINE_integer("episode_steps", 833,
                      "Number of time steps in an episode")
 
