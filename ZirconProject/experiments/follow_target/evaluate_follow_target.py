@@ -17,7 +17,7 @@ from mocapact.distillation import model
 from obstacles import Obstacles
 
 FLAGS = flags.FLAGS
-flags.DEFINE_string("model_root", "transfer/velocity_control/locomotion_low_level",
+flags.DEFINE_string("model_root", "transfer/go_to_target/locomotion_low_level",
                     "Directory where policy is stored")
 flags.DEFINE_float("max_embed", 3., "Maximum embed")
 task_file = "ZirconProject/experiments/follow_target/config.py"
