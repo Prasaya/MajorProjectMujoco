@@ -120,6 +120,16 @@ class VelocityControl(composer.Task):
             physics.bind(walker_nonfoot_geoms).element_id)
         self._ground_geomids = set(physics.bind(
             self._arena.ground_geoms).element_id)
+        
+        rotation = 0.5 * np.pi
+        quat = [np.cos(rotation / 2), 0, 0, np.sin(rotation / 2)]
+        walker_x, walker_y = 0, 0
+        
+        self._walker.shift_pose(
+            physics,
+            position=[walker_x, walker_y, 0.],
+            quaternion=quat,
+            rotate_velocity=True)
 
     def get_reward(self, physics):
         xvel = self._walker.observables.torso_xvel(physics)
