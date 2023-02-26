@@ -6,6 +6,10 @@
     <mesh name="chair" file="../../../../../mesh/chairF.obj"/>
     <mesh name="roof" file="../../../../../mesh/Roofwalls.obj"/>
     <mesh name="roof_nofloor" file="../../../../../mesh/Roof_nf_large.obj"/>
+    <mesh name="roof_wall1" file="../../../../../mesh/roof_wall1.obj"/>
+    <mesh name="roof_wall2" file="../../../../../mesh/roof_wall2.obj"/>
+    <mesh name="roof_wall3" file="../../../../../mesh/roof_wall3.obj"/>
+    <mesh name="roof_wall4" file="../../../../../mesh/roof_wall4.obj"/>
     <mesh name="table" file="../../../../../mesh/tableF.obj"/>
     <mesh name="barrier" file="../../../../../mesh/barrier.obj"/>
   </asset>
