@@ -79,15 +79,17 @@ class VelocityControl(composer.Task):
         source = 0
         # self.dir_index = 1
         # dir = [1.75*np.pi, 0.25*np.pi, 0*np.pi, 0.75*np.pi, 1*np.pi, 1.25*np.pi, 1.5*np.pi, 1.75*np.pi, 2*np.pi]
-        dir = [1.75*np.pi, 0, 0.55206, 0.0209,
-               0.0209, 0.0209, 0.0209, 0.25 * np.pi, 0, 1.75 * np.pi]
+        dir = [np.pi*1.5, 0, 0, np.pi*1/6, 0, 0, 0, 0, np.pi*5/3, np.pi*11/6, 0, 0, np.pi*5/12, np.pi*1/3, np.pi*0.105, 
+               np.pi*35/18, np.pi*11/6, np.pi*1/4, np.pi*1/4, np.pi*1/6, np.pi*7/4, 0]
+        # dir = [1.75*np.pi, 0, 0.55206, 0.0209,
+        #        0.0209, 0.0209, 0.0209, 0.25 * np.pi, 0, 1.75 * np.pi]
 
         if(self.dir_index < len(dir)):
             source = dir[self.dir_index]
             self.dir_index += 1
         else:
             source = dir[-1]
-        print("Changing source to ", source)
+        # print("Changing source to ", source)
 
         # self._move_speed = random_state.uniform(high=self._max_speed)
         # self._move_angle = random_state.uniform(high=2*np.pi)

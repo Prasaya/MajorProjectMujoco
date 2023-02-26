@@ -174,6 +174,21 @@ class FloorWithMesh(Arena):
         self.mjcf_model.worldbody.add('geom',
                                       type='mesh',
                                       mesh='chair',
+                                      pos=[37, 0, 0],
+                                      size=[1, 1, 1])
+        self.mjcf_model.worldbody.add('geom',
+                                      type='mesh',
+                                      mesh='chair',
+                                      pos=[36, -1, 0],
+                                      size=[1, 1, 1])
+        self.mjcf_model.worldbody.add('geom',
+                                      type='mesh',
+                                      mesh='chair',
+                                      pos=[35, -2, 0],
+                                      size=[1, 1, 1])
+        self.mjcf_model.worldbody.add('geom',
+                                      type='mesh',
+                                      mesh='chair',
                                       pos=[38, 1, 0],
                                       size=[1, 1, 1])
         self.mjcf_model.worldbody.add('geom',
@@ -185,6 +200,11 @@ class FloorWithMesh(Arena):
                                       type='mesh',
                                       mesh='chair',
                                       pos=[39, 4, 0],
+                                      size=[1, 1, 1])
+        self.mjcf_model.worldbody.add('geom',
+                                      type='mesh',
+                                      mesh='chair',
+                                      pos=[40, 1, 0],
                                       size=[1, 1, 1])
         self.mjcf_model.worldbody.add('geom',
                                       type='mesh',
