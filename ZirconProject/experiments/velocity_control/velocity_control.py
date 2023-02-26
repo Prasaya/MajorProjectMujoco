@@ -81,14 +81,14 @@ class VelocityControl(composer.Task):
 
     def _sample_move_speed(self, random_state, physics):
         # Static directions (steps_before_changing_velocity=50 in config.py)
-        source = 0
-        dir = [np.pi*1.5, 0, 0, np.pi*1/6, 0, 0, 0, 0, np.pi*5/3, np.pi*11/6, 0, 0, np.pi*5/12, np.pi*1/3, np.pi*0.105, 
-               np.pi*35/18, np.pi*11/6, np.pi*1/4, np.pi*1/4, np.pi*1/6, np.pi*7/4, 0]
-        if(self.dir_index < len(dir)):
-            source = dir[self.dir_index]
-            self.dir_index += 1
-        else:
-            source = dir[-1]
+        # source = 0
+        # dir = [np.pi*1.5, 0, 0, np.pi*1/6, 0, 0, 0, 0, np.pi*5/3, np.pi*11/6, 0, 0, np.pi*5/12, np.pi*1/3, np.pi*0.105, 
+        #        np.pi*35/18, np.pi*11/6, np.pi*1/4, np.pi*1/4, np.pi*1/6, np.pi*7/4, 0]
+        # if(self.dir_index < len(dir)):
+        #     source = dir[self.dir_index]
+        #     self.dir_index += 1
+        # else:
+        #     source = dir[-1]
         # print("Changing source to ", source)
     
         # Dynamic direction
@@ -103,8 +103,11 @@ class VelocityControl(composer.Task):
             required_pos[1] - agent_pos[1], required_pos[0] - agent_pos[0])
         if source < 0:
             source += 2*np.pi
+        if agent_pos[0] < 1:
+            source = 1.5*np.pi
         print("Changing source to", np.rad2deg(source), "for moving to",
               required_pos, "from", agent_pos)
+        print("Current move angle: ", np.rad2deg(self._move_angle))
 
         # self._move_speed = random_state.uniform(high=self._max_speed)
         # self._move_angle = random_state.uniform(high=2*np.pi)
