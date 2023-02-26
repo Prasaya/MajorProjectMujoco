@@ -15,5 +15,5 @@ class Application(application.Application):
         def custom_handler():
             body_id, position = self._viewer.camera.raycast(
                 self._viewport, self._viewer._mouse.position)
-            return print(position)
+            print(list(position))
         self._viewer._input_map.bind(custom_handler, _INSERT_TARGET)

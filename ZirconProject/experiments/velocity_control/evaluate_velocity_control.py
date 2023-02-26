@@ -20,7 +20,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string("model_root", "transfer/velocity_control/locomotion_low_level",
                     "Directory where policy is stored")
 flags.DEFINE_float("max_embed", 3., "Maximum embed")
-task_file = "ZirconProject/experiments/follow_target/config.py"
+task_file = "ZirconProject/experiments/velocity_control/config.py"
 config_flags.DEFINE_config_file(
     "task", f"{task_file}:velocity_control", "Task")
 flags.DEFINE_integer("episode_steps", 833,
@@ -51,12 +51,34 @@ CONTROL_TIMESTEP = 0.03
 
 
 def main(_):
+    points_to_visit = [
+        [14.96050088,  2.49363389,  0.,],
+        [18.45211367,  1.9777333,   0.,],
+        [20.44371505, -2.49310074,  0.,],
+        [24.4359803,  -3.54688185,  0.,],
+        [27.48505143, -3.55164118,  0.,],
+        [28.3758981, -2.57725780, 0,],
+        [28.3868183, 1.40260223, 0,],
+        [28.35983939,  4.38714623,  0.,],
+        [33.62379556,  3.4318704,  0.,],
+        [36.09902299,  5.54530202,  0.,],
+        [37.56909918, 3.91613423,  0.,],
+        [39.4202919,   2.49871612,  0.,],
+        [40.82714239, 0.63240865,  0.,],
+        [44.019563,    1.29132315,  0.,],
+        [46.66408255,  1.45614562,  0.,],
+        [48.39099773, -0.06663285,  0.,],
+        [53.26488259, -0.83460439,  0.,],
+        [5.69835175e+01, -2.83778854e-01,  0,],
+    ]
+
     env_ctor = dm_control_wrapper.DmControlWrapper.make_env_constructor(
         FLAGS.task.constructor)
     task_kwargs = dict(
         physics_timestep=tracking.DEFAULT_PHYSICS_TIMESTEP,
         control_timestep=CONTROL_TIMESTEP,
         obstacles=Obstacles(),
+        points_to_visit=points_to_visit,
         **FLAGS.task.config
     )
     environment_kwargs = dict(
