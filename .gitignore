@@ -5,6 +5,7 @@ __pycache__/
 
 
 modelFromTPU
+multiclip_policy
 
 # C extensions
 *.so
