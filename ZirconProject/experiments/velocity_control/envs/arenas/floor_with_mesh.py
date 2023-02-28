@@ -48,7 +48,7 @@ class FloorWithMesh(Arena):
             name='groundplane',
             material=self._ground_material,
             # size=[1,1,1]
-            group=3,
+            group=2,
             size=list(size) + [_GROUNDPLANE_QUAD_SIZE]
         )
 
@@ -83,12 +83,14 @@ class FloorWithMesh(Arena):
                                       type='mesh',
                                       name='AC_road1',
                                       mesh='AC_road1',
+                                      group=3,
                                       pos=[35, 0, 0],
                                       size=[1, 1, 1])
         self.mjcf_model.worldbody.add('geom',
                                       type='mesh',
                                       name='AC_road2',
                                       mesh='AC_road2',
+                                      group=3,
                                       pos=[35, 0, 0],
                                       size=[1, 1, 1])
 
