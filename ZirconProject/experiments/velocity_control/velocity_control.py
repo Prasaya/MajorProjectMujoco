@@ -115,11 +115,8 @@ class VelocityControl(composer.Task):
             source += 2*np.pi
         if agent_pos[0] < 1:
             source = 1.5*np.pi
-        print("Changing source to", np.rad2deg(source), "for moving to",
-              required_pos, "from", agent_pos)
-
-        self._move_speed = random_state.uniform(high=self._max_speed)
-        self._move_angle = random_state.uniform(high=2*np.pi)
+        # print("Changing source to", np.rad2deg(source), "for moving to",
+        #       required_pos, "from", agent_pos)
         self._move_speed = 2
         self._move_angle = source
         self._move_speed_counter = 0
