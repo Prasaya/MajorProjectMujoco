@@ -2,10 +2,12 @@
 Script used for visualizing a policy for the RL transfer velocity control task.
 """
 import os.path as osp
+import sys
 import numpy as np
 import torch
 from absl import app, flags, logging
 from ml_collections.config_flags import config_flags
+from gym.spaces import dict as gym_dict
 
 from ZirconProject.custom_application import application
 from dm_control.locomotion.tasks.reference_pose import tracking
@@ -94,12 +96,40 @@ def main(_):
         use_walls=True,
         act_noise=0.0,
     )
-    print(env)
+    # print(env)
+
+    # print(type(env.observation_space))
+    # print(env.observation_space.keys())
+
+    obs = env.observation_space
+    obs1 = gym_dict.Dict()
+    obs2 = gym_dict.Dict()
+    for k, v in env.observation_space.items():
+        if not k.startswith('walker_1/'):
+            obs1[k] = v
+    for k, v in env.observation_space.items():
+        if not k.startswith('walker/'):
+            obs2[k] = v
+
+    print("\n\n\nobs1  ", obs1)
+    print("\n\n\nobs2  ", obs2, "\n\n")
+
+
+    print("Obs1 keys ", list(obs1.keys()), "\n\n")
 
     # Set up model
     high_level_model = utils.load_policy(
         FLAGS.model_root,
-        list(env.observation_space.keys()),
+        list(obs1.keys()),
+        device=FLAGS.device
+    )
+
+   
+    # sys.exit()
+
+    high_level_model2 = utils.load_policy(
+        FLAGS.model_root,
+        list(obs1.keys()),
         device=FLAGS.device
     )
 
@@ -115,18 +145,40 @@ def main(_):
     @torch.no_grad()
     def policy_fn(time_step):
         obs = env.get_observation(time_step)
+        
+        obs1 = {}
+        obs2 = {}
+        for k, v in obs.items():
+            if not k.startswith('walker_1/'):
+                obs1[k] = v
+        for k, v in obs.items():
+            if not k.startswith('walker/'):
+                obs2[k] = v
+
+        # print("Type of obs is ", type(obs))
+        # print("high level", type(high_level_model.observation_space))
+        obs11 = obs1
         if low_level_policy:
-            embed, _ = high_level_model.predict(obs, deterministic=True)
+            embed, _ = high_level_model.predict(obs1, deterministic=True)
             embed = np.clip(embed, -FLAGS.max_embed, FLAGS.max_embed)
-            obs = {k: v.astype(np.float32) for k, v in obs.items()}
-            obs = obs_as_tensor(obs, 'cpu')
+            obs1 = {k: v.astype(np.float32) for k, v in obs1.items()}
+            obs1 = obs_as_tensor(obs1, 'cpu')
             embed = torch.tensor(embed)
-            action = low_level_policy(obs, embed)
+            action = low_level_policy(obs1, embed)
             action = np.clip(action, -1., 1.)
-            # print(action.shape)
+
+            # embed2, _ = high_level_model2.predict(obs1, deterministic=True)
+            # embed2 = np.clip(embed2, -FLAGS.max_embed, FLAGS.max_embed)
+            # obs = {k: v.astype(np.float32) for k, v in obs.items()}
+            # obs = obs_as_tensor(obs, 'cpu')
+            # embed = torch.tensor(embed)
+            # action2 = low_level_policy(obs, embed2)
+            # action2 = np.clip(action2, -1., 1.)
         else:
-            action, _ = high_level_model.predict(obs, deterministic=True)
-        return action
+            action, _ = high_level_model.predict(obs1, deterministic=True)
+            # action2, _ = high_level_model2.predict(obs2, deterministic=True)
+        action2 = action
+        return [action, action2]
 
     if FLAGS.visualize:
         viewer_app = application.Application(

@@ -53,11 +53,6 @@ class VelocityControl(composer.Task):
         initializer = StandInitializer()
         self._walker2 = cmu_humanoid.CMUHumanoidPositionControlledV2020(initializer=initializer)
 
-        print("Walker 1: ", id(self._walker))
-        print("Walker 2: ", id(self._walker2))
-        print("Walker 1: ", self._walker.upright_pose)
-        print("Walker 2: ", self._walker2.upright_pose)
-
         self._arena = arena
         self._walker.create_root_joints(self._arena.attach(self._walker))
 
@@ -92,14 +87,14 @@ class VelocityControl(composer.Task):
         for obs in enabled_observables:
             obs.enabled = True
 
-        # enabled_observables2 = []
-        # enabled_observables2 += self._walker2.observables.proprioception
-        # enabled_observables2 += self._walker2.observables.kinematic_sensors
-        # enabled_observables2 += self._walker2.observables.dynamic_sensors
-        # enabled_observables2.append(self._walker2.observables.sensors_touch)
-        # enabled_observables2.append(self._walker2.observables.torso_xvel)
-        # enabled_observables2.append(self._walker2.observables.torso_yvel)
-        # enabled_observables2 += list(self._task_observables.values())
+        enabled_observables2 = []
+        enabled_observables2 += self._walker2.observables.proprioception
+        enabled_observables2 += self._walker2.observables.kinematic_sensors
+        enabled_observables2 += self._walker2.observables.dynamic_sensors
+        enabled_observables2.append(self._walker2.observables.sensors_touch)
+        enabled_observables2.append(self._walker2.observables.torso_xvel)
+        enabled_observables2.append(self._walker2.observables.torso_yvel)
+        enabled_observables2 += list(self._task_observables.values())
         # for obs in enabled_observables2:
         #     obs.enabled = True
 
@@ -123,9 +118,9 @@ class VelocityControl(composer.Task):
         set3, set4 = self._walker2_nonfoot_geomids, self._ground_geomids
         return ((contact.geom1 in set1 and contact.geom2 in set2) or
                 (contact.geom1 in set2 and contact.geom2 in set1)  
-                #Changed here
-                or (contact.geom1 in set3 and contact.geom2 in set4) or
-                (contact.geom1 in set4 and contact.geom2 in set3)
+                # #Changed here
+                # or (contact.geom1 in set3 and contact.geom2 in set4) or
+                # (contact.geom1 in set4 and contact.geom2 in set3)
                 ) 
 
     def _sample_move_speed(self, random_state, physics):
@@ -213,7 +208,7 @@ class VelocityControl(composer.Task):
         
         self._walker2.shift_pose(
             physics,
-            position=[0, -20, 0.],
+            position=[0, -30, 0.],
             quaternion=quat,
             rotate_velocity=True)
 
@@ -238,8 +233,8 @@ class VelocityControl(composer.Task):
         return reward
 
     def before_step(self, physics, action, random_state):
-        self._walker.apply_action(physics, action, random_state)
-        self._walker2.apply_action(physics, action, random_state)
+        self._walker.apply_action(physics, action[0], random_state)
+        self._walker2.apply_action(physics, action[1], random_state)
 
     def after_step(self, physics, random_state):
         self._failure_termination = False
