@@ -109,13 +109,8 @@ def main(_):
             obs1[k] = v
     for k, v in env.observation_space.items():
         if not k.startswith('walker/'):
-            obs2[k] = v
+            obs2[k.replace('walker_1/', 'walker/')] = v
 
-    print("\n\n\nobs1  ", obs1)
-    print("\n\n\nobs2  ", obs2, "\n\n")
-
-
-    print("Obs1 keys ", list(obs1.keys()), "\n\n")
 
     # Set up model
     high_level_model = utils.load_policy(
@@ -123,13 +118,11 @@ def main(_):
         list(obs1.keys()),
         device=FLAGS.device
     )
-
-   
     # sys.exit()
 
     high_level_model2 = utils.load_policy(
         FLAGS.model_root,
-        list(obs1.keys()),
+        list(obs2.keys()),
         device=FLAGS.device
     )
 
@@ -153,11 +146,8 @@ def main(_):
                 obs1[k] = v
         for k, v in obs.items():
             if not k.startswith('walker/'):
-                obs2[k] = v
+                obs2[k.replace('walker_1/', 'walker/')] = v
 
-        # print("Type of obs is ", type(obs))
-        # print("high level", type(high_level_model.observation_space))
-        obs11 = obs1
         if low_level_policy:
             embed, _ = high_level_model.predict(obs1, deterministic=True)
             embed = np.clip(embed, -FLAGS.max_embed, FLAGS.max_embed)
@@ -167,17 +157,17 @@ def main(_):
             action = low_level_policy(obs1, embed)
             action = np.clip(action, -1., 1.)
 
-            # embed2, _ = high_level_model2.predict(obs1, deterministic=True)
-            # embed2 = np.clip(embed2, -FLAGS.max_embed, FLAGS.max_embed)
-            # obs = {k: v.astype(np.float32) for k, v in obs.items()}
-            # obs = obs_as_tensor(obs, 'cpu')
-            # embed = torch.tensor(embed)
-            # action2 = low_level_policy(obs, embed2)
-            # action2 = np.clip(action2, -1., 1.)
+            embed2, _ = high_level_model2.predict(obs2, deterministic=True)
+            embed2 = np.clip(embed2, -FLAGS.max_embed, FLAGS.max_embed)
+            obs2 = {k: v.astype(np.float32) for k, v in obs2.items()}
+            obs2 = obs_as_tensor(obs2, 'cpu')
+            embed2 = torch.tensor(embed2)
+            action2 = low_level_policy(obs2, embed2)
+            action2 = np.clip(action2, -1., 1.)
         else:
             action, _ = high_level_model.predict(obs1, deterministic=True)
-            # action2, _ = high_level_model2.predict(obs2, deterministic=True)
-        action2 = action
+            action2, _ = high_level_model2.predict(obs2, deterministic=True)
+        # action2 = action
         return [action, action2]
 
     if FLAGS.visualize:
