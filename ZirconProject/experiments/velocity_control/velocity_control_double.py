@@ -95,8 +95,8 @@ class VelocityControl(composer.Task):
         enabled_observables2.append(self._walker2.observables.torso_xvel)
         enabled_observables2.append(self._walker2.observables.torso_yvel)
         enabled_observables2 += list(self._task_observables.values())
-        # for obs in enabled_observables2:
-        #     obs.enabled = True
+        for obs in enabled_observables2:
+            obs.enabled = True
 
 
         self.set_timesteps(physics_timestep=physics_timestep,
@@ -116,11 +116,11 @@ class VelocityControl(composer.Task):
     def _is_disallowed_contact(self, contact):
         set1, set2 = self._walker_nonfoot_geomids, self._ground_geomids
         set3, set4 = self._walker2_nonfoot_geomids, self._ground_geomids
-        return ((contact.geom1 in set1 and contact.geom2 in set2) or
-                (contact.geom1 in set2 and contact.geom2 in set1)  
+        return ( ( (contact.geom1 in set1 and contact.geom2 in set2) or
+                (contact.geom1 in set2 and contact.geom2 in set1) ) 
                 # #Changed here
-                # or (contact.geom1 in set3 and contact.geom2 in set4) or
-                # (contact.geom1 in set4 and contact.geom2 in set3)
+                and ( (contact.geom1 in set3 and contact.geom2 in set4) or
+                (contact.geom1 in set4 and contact.geom2 in set3) )
                 ) 
 
     def _sample_move_speed(self, random_state, physics):
