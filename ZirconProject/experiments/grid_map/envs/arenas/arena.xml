@@ -1,0 +1,23 @@
+<mujoco model="base">
+  <compiler coordinate='local' angle='radian' eulerseq='xyz' boundmass='1e-5' boundinertia='1e-11'/>
+
+  <option cone='elliptic' noslip_iterations='5' noslip_tolerance='0' timestep='0.002'/>
+  <asset>
+    <mesh name="chair" file="../../../../../mesh/chair_s.obj"/>
+    <mesh name="chairL" file="../../../../../mesh/chair_L.obj"/>
+    <mesh name="chairR" file="../../../../../mesh/chair_R.obj"/>
+    <mesh name="chairF" file="../../../../../mesh/chair_F.obj"/>
+    <mesh name="table" file="../../../../../mesh/table.obj"/>
+    <mesh name="roof_wall1" file="../../../../../mesh/roof_wall1.obj"/>
+    <mesh name="roof_wall2" file="../../../../../mesh/roof_wall2.obj"/>
+    <mesh name="roof_wall3" file="../../../../../mesh/roof_wall3.obj"/>
+    <mesh name="roof_wall4" file="../../../../../mesh/roof_wall4.obj"/>
+    <mesh name="AC_road1" file="../../../../../mesh/AC_road1.obj"/>
+    <mesh name="AC_road2" file="../../../../../mesh/AC_road2.obj"/>
+  </asset>
+  <visual>
+    <map znear='0.01'/>
+    <headlight diffuse='.6 .6 .6'  ambient='.3 .3 .3' specular='0 0 0'/>
+    <scale forcewidth='0.01' contactwidth='0.06' contactheight='0.01' jointwidth='.01' framewidth='.01' framelength='.3'/>
+  </visual>
+</mujoco>
