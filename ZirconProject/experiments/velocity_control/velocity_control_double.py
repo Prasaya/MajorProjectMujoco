@@ -92,11 +92,24 @@ class VelocityControl(composer.Task):
         enabled_observables2 += self._walker2.observables.kinematic_sensors
         enabled_observables2 += self._walker2.observables.dynamic_sensors
         enabled_observables2.append(self._walker2.observables.sensors_touch)
-        enabled_observables2.append(self._walker2.observables.torso_xvel)
-        enabled_observables2.append(self._walker2.observables.torso_yvel)
         enabled_observables2 += list(self._task_observables.values())
         for obs in enabled_observables2:
             obs.enabled = True
+
+        self._target = self.root_entity.mjcf_model.worldbody.add(
+        'site',
+        name='target',
+        type='sphere',
+        pos=(-20., 0., 0.),
+        size=(0.1,),
+        rgba=(0.9, 0.6, 0.6, 1.0),
+        group=0
+        )
+
+        self._walker2.observables.add_egocentric_vector(
+            'target',
+            dm_observable.MJCFFeature('pos', self._target),
+            origin_callable=lambda physics: physics.bind(self._walker2.root_body).xpos)
 
 
         self.set_timesteps(physics_timestep=physics_timestep,
@@ -208,7 +221,7 @@ class VelocityControl(composer.Task):
         
         self._walker2.shift_pose(
             physics,
-            position=[0, -30, 0.],
+            position=[-31., 0., 0.],
             quaternion=quat,
             rotate_velocity=True)
 

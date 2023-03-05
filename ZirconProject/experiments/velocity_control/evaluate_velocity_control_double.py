@@ -21,6 +21,8 @@ from obstacles import Obstacles
 FLAGS = flags.FLAGS
 flags.DEFINE_string("model_root", "transfer/velocity_control/locomotion_low_level",
                     "Directory where policy is stored")
+flags.DEFINE_string("model_root2", "transfer/go_to_target/locomotion_low_level", 
+                    "Directory where second policy is stored")
 flags.DEFINE_float("max_embed", 3., "Maximum embed")
 task_file = "ZirconProject/experiments/velocity_control/config.py"
 config_flags.DEFINE_config_file(
@@ -96,19 +98,17 @@ def main(_):
         use_walls=True,
         act_noise=0.0,
     )
-    # print(env)
 
-    # print(type(env.observation_space))
-    # print(env.observation_space.keys())
 
     obs = env.observation_space
     obs1 = gym_dict.Dict()
     obs2 = gym_dict.Dict()
+
     for k, v in env.observation_space.items():
         if not k.startswith('walker_1/'):
             obs1[k] = v
     for k, v in env.observation_space.items():
-        if not k.startswith('walker/'):
+        if not k.startswith('walker/')and not k.endswith('target_obs') :
             obs2[k.replace('walker_1/', 'walker/')] = v
 
 
@@ -118,10 +118,9 @@ def main(_):
         list(obs1.keys()),
         device=FLAGS.device
     )
-    # sys.exit()
 
     high_level_model2 = utils.load_policy(
-        FLAGS.model_root,
+        FLAGS.model_root2,
         list(obs2.keys()),
         device=FLAGS.device
     )
@@ -145,7 +144,7 @@ def main(_):
             if not k.startswith('walker_1/'):
                 obs1[k] = v
         for k, v in obs.items():
-            if not k.startswith('walker/'):
+            if not k.startswith('walker/') and not k.endswith('target_obs'):
                 obs2[k.replace('walker_1/', 'walker/')] = v
 
         if low_level_policy:
