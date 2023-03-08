@@ -146,6 +146,12 @@ class VelocityControl(composer.Task):
 
         self._failure_termination = False
         walker_foot_geoms = set(self._walker.ground_contact_geoms)
+        walker_geoms = [
+            geom for geom in self._walker.mjcf_model.find_all('geom')
+        ]
+        self._walker_geoms = set(
+        physics.bind(walker_geoms).element_id
+        )
         walker_nonfoot_geoms = [
             geom for geom in self._walker.mjcf_model.find_all('geom')
             if geom not in walker_foot_geoms
