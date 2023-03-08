@@ -192,15 +192,15 @@ class VelocityControl(composer.Task):
 
         reward = speed_reward * angle_reward
 
-        print("\n\nReward before reward1 is ", reward)
+        # print("\n\nReward before reward1 is ", reward)
         distance = np.linalg.norm(
             [70, 0] -
             physics.bind(self._walker.root_body).xpos[:2])
         norm_distance = distance / 72
         reward1 = 1 - norm_distance
         # reward += reward1
-        print("\nreward1 is ", reward1)
-        print("\nReward after reward1 is ", reward, "\n")
+        # print("\nreward1 is ", reward1)
+        # print("\nReward after reward1 is ", reward, "\n")
 
         return reward
 
