@@ -83,6 +83,14 @@ class VelocityControl(composer.Task):
 
     def _is_disallowed_contact(self, contact):
         set1, set2 = self._walker_nonfoot_geomids, self._ground_geomids
+        set3 = set(self._walker_geoms)
+        set3.add(self._ground_geomids)
+        return (
+        (contact.geom1 in set3 and contact.geom2 not in set3) or
+        (contact.geom1 not in set3 and contact.geom2 not in set3) or
+        (contact.geom1 in set1 and contact.geom2 in set2) or
+        (contact.geom1 in set2 and contact.geom2 in set1)
+        )
         return ((contact.geom1 in set1 and contact.geom2 in set2) or
                 (contact.geom1 in set2 and contact.geom2 in set1))
 
