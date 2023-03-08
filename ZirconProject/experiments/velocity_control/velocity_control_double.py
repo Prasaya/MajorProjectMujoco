@@ -8,6 +8,7 @@ import numpy as np
 import mujoco
 
 from dm_control import composer
+from dm_control.composer import variation
 from dm_control.composer.observation import observable as dm_observable
 from dm_control.locomotion.tasks.reference_pose import tracking, utils
 from dm_control.mjcf import Physics
@@ -46,7 +47,7 @@ class VelocityControl(composer.Task):
         physics_timestep=tracking.DEFAULT_PHYSICS_TIMESTEP,
         control_timestep=0.03,
         obstacles=None,
-        points_to_visit=[]
+        points_to_visit=[],
     ):
         self._obstacles = obstacles
         self._walker = walker
@@ -100,7 +101,7 @@ class VelocityControl(composer.Task):
         'site',
         name='target',
         type='sphere',
-        pos=(-20., 0., 0.),
+        pos=(4., -27., 0.),
         size=(0.1,),
         rgba=(0.9, 0.6, 0.6, 1.0),
         group=0
@@ -117,6 +118,46 @@ class VelocityControl(composer.Task):
 
         self.points_to_visit = points_to_visit
         self.dir_index = 0
+        self.targets_to_visit = [ 
+                        [4., -27.],
+                        [6.4, -27.16],
+                        [7.6, -25.26],
+                        [9.5, -26.56],
+                        [11, -24.66],
+                        [15.645, -25.85],
+                        [20.3, -26.34] 
+                        ]
+        # self.targets_to_visit = [
+        #                 [4., -27.],
+        #                 [4.1, -27.],
+        #                 [4.2, -27.],
+        #                 [4.3, -27.],
+        #                 [4.4, -27.],
+        #                 [4.5, -27.],
+        #                 [4.6, -27.],
+        #                 [4.7, -27.],
+        #                 [4.8, -27.],
+        #                 [4.9, -27.],
+        #                 [5., -27.],
+        #                 [5.1, -27.],
+        #                 [5.2, -27.],
+        #                 [5.3, -27.],
+        #                 [5.4, -27.],
+        #                 [5.5, -27.],
+        #                 [5.6, -27.],
+        #                 [5.7, -27.],
+        #                 [5.8, -27.],
+        #                 [5.9, -27.],
+        #                 [6., -27.],
+        #                 [6.1, -27.],
+        #                 [6.2, -27.],
+        #                 [6.3, -27.],
+        #                 [6.4, -27.],
+        #                 [6.5, -27.],
+        #                 ]
+        self.target_index = 0
+        self._reward_step_counter = 0
+
 
     @property
     def root_entity(self):
@@ -221,7 +262,7 @@ class VelocityControl(composer.Task):
         
         self._walker2.shift_pose(
             physics,
-            position=[-31., 0., 0.],
+            position=[0., -25., 0.],
             quaternion=quat,
             rotate_velocity=True)
 
@@ -243,6 +284,14 @@ class VelocityControl(composer.Task):
 
         reward = speed_reward * angle_reward
         # return 0
+
+        # distance = np.linalg.norm(
+        # physics.bind(self._target).pos[:2] -
+        # physics.bind(self._walker.root_body).xpos[:2])
+        # if distance < 1:
+        #     reward = 1.
+        # self._reward_step_counter += 1
+
         return reward
 
     def before_step(self, physics, action, random_state):
@@ -259,3 +308,21 @@ class VelocityControl(composer.Task):
         self._move_speed_counter += 1
         if self._move_speed_counter >= self._steps_before_changing_velocity:
             self._sample_move_speed(random_state, physics)
+        
+        distance = np.linalg.norm(
+        physics.bind(self._target).pos[:2] -
+        physics.bind(self._walker2.root_body).xpos[:2])
+        if distance < 1:
+        # self._reward_step_counter += 1
+        # if (self._reward_step_counter >= 10):
+
+            if self.target_index < len(self.targets_to_visit):
+                self._target_spawn_position = self.targets_to_visit[self.target_index]
+                self.target_index += 1
+            target_x, target_y = variation.evaluate(
+                self._target_spawn_position, random_state=random_state)
+        
+            physics.bind(self._target).pos = [target_x, target_y, 0.]
+
+            # Reset the number of steps at the target for the moving target.
+            self._reward_step_counter = 0
