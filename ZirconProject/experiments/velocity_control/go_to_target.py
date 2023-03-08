@@ -75,7 +75,7 @@ class GoToTarget(composer.Task):
     self.target_list = [ [5, -3], [10, -5.3], [15, 0.5], [20, 1.25], [23, 0], [25, -2.5], [27.5, -4.0], [30, -5.0], [35, 0.5], [40, 1.5] ]
     self.target_index = 0
     # self._target_spawn_position = [2, 0]
-    
+
     self._target_spawn_position = self.target_list[self.target_index]
     self.target_index += 1
 
@@ -149,6 +149,12 @@ class GoToTarget(composer.Task):
 
     self._failure_termination = False
     walker_foot_geoms = set(self._walker.ground_contact_geoms)
+    walker_geoms = [
+      geom for geom in self._walker.mjcf_model.find_all('geom')
+    ]
+    self._walker_geoms = set(
+      physics.bind(walker_geoms).element_id
+    )
     walker_nonfoot_geoms = [
         geom for geom in self._walker.mjcf_model.find_all('geom')
         if geom not in walker_foot_geoms]
@@ -160,6 +166,14 @@ class GoToTarget(composer.Task):
 
   def _is_disallowed_contact(self, contact):
     set1, set2 = self._walker_nonfoot_geomids, self._ground_geomids
+    set3 = set(self._walker_geoms)
+    set3.add(self._ground_geomids)
+    return (
+      (contact.geom1 in set3 and contact.geom2 not in set3) or
+      (contact.geom1 not in set3 and contact.geom2 not in set3) or
+      (contact.geom1 in set1 and contact.geom2 in set2) or
+      (contact.geom1 in set2 and contact.geom2 in set1)
+    )
     return ((contact.geom1 in set1 and contact.geom2 in set2) or
             (contact.geom1 in set2 and contact.geom2 in set1))
 
@@ -209,7 +223,7 @@ class GoToTarget(composer.Task):
           self.target_index += 1
         target_x, target_y = variation.evaluate(
             self._target_spawn_position, random_state=random_state)
-        
+
       physics.bind(self._target).pos = [target_x, target_y, 0.]
 
       # Reset the number of steps at the target for the moving target.
