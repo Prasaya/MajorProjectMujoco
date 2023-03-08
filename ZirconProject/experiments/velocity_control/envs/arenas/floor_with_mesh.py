@@ -52,6 +52,22 @@ class FloorWithMesh(Arena):
             size=list(size) + [_GROUNDPLANE_QUAD_SIZE]
         )
 
+        self._mjcf_root.worldbody.add('geom',
+                                     type="box",
+                                     name="wall1",
+                                     pos=[-15, 0, 0],
+                                     group=4,
+                                     size=[0.5, 20, 1]
+                                    )
+
+        self._mjcf_root.worldbody.add('geom',
+                                     type="box",
+                                     name="wall2",
+                                     pos=[72, 0, 0],
+                                     group=4,
+                                     size=[0.5, 20, 1]
+                                    )
+        
         # Mesh for Roof walls
         # self._mjcf_root.worldbody.add('geom',
         #                               type='mesh',
@@ -59,6 +75,7 @@ class FloorWithMesh(Arena):
         #                               mesh='roof_wall1',
         #                               pos=[35, 0, 0],
         #                               size=[1, 1, 1])
+        
         # self.mjcf_model.worldbody.add('geom',
         #                               type='mesh',
         #                               name='roof_wall2',

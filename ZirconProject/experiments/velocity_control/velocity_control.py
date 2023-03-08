@@ -83,8 +83,11 @@ class VelocityControl(composer.Task):
 
     def _is_disallowed_contact(self, contact):
         set1, set2 = self._walker_nonfoot_geomids, self._ground_geomids
-        set3 = set(self._walker_geoms)
-        set3.add(self._ground_geomids)
+        # set3 = set(self._walker_geoms)
+        # set3.add(self._ground_geomids)
+
+        set3 = self._walker_geoms.union(self._ground_geomids)
+
         return (
         (contact.geom1 in set3 and contact.geom2 not in set3) or
         (contact.geom1 not in set3 and contact.geom2 not in set3) or
@@ -188,6 +191,15 @@ class VelocityControl(composer.Task):
             angle_reward = ((dot + 1) / 2)**self._direction_exponent
 
         reward = speed_reward * angle_reward
+
+        # print("\n\nReward before reward1 is ", reward)
+        # distance = np.linalg.norm(
+        #     [72, 0] -
+        #     physics.bind(self._walker.root_body).xpos[:2])
+        # reward1 = -distance
+        # # reward += reward1
+        # print("\nreward1 is ", reward1)
+        # print("\nReward after reward1 is ", reward, "\n")
         return reward
 
     def before_step(self, physics, action, random_state):
