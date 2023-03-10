@@ -184,14 +184,15 @@ class VelocityControl(composer.Task):
         self._move_angle = source
         self._move_speed_counter = 0
 
+    def _sample_move_speed2(self, random_state, physics):
         agent_pos2 = physics.named.data.xpos['walker_1/root']
         agent_pos2 = np.array([agent_pos2[0], agent_pos2[1]])
         required_pos2 = self.points_to_visit2[0]
-        for pos in self.points_to_visit2:
-            if pos[0] > agent_pos2[0]:
-                required_pos2 = pos
+        for pos2 in self.points_to_visit2:
+            if pos2[0] > agent_pos2[0]:
+                required_pos2 = pos2
                 break
-        print("Moving to for agent2 ", required_pos2, "from", agent_pos2)
+        print("Moving to for agent2 ", required_pos2, "from", agent_pos2, "\n\n")
         source2 = np.arctan2(
             required_pos2[1] - agent_pos2[1], required_pos2[0] - agent_pos2[0])
         if source2 < 0:
@@ -217,6 +218,7 @@ class VelocityControl(composer.Task):
     def initialize_episode(self, physics, random_state):
         self._walker.reinitialize_pose(physics, random_state)
         self._sample_move_speed(random_state, physics)
+        self._sample_move_speed2(random_state, physics)
 
         self._failure_termination = False
 
@@ -290,3 +292,7 @@ class VelocityControl(composer.Task):
         self._move_speed_counter += 1
         if self._move_speed_counter >= self._steps_before_changing_velocity:
             self._sample_move_speed(random_state, physics)
+
+        self._move_speed_counter2 += 1
+        if self._move_speed_counter2 >= self._steps_before_changing_velocity:
+            self._sample_move_speed2(random_state, physics)
