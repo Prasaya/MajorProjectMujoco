@@ -102,6 +102,8 @@ class VelocityControl(composer.Task):
         agent_pos = physics.named.data.xpos['walker/root']
         agent_pos = np.array([agent_pos[0], agent_pos[1]])
         required_pos = self.points_to_visit[0]
+        if agent_pos[0] > self.points_to_visit[-1][0]:
+            self._failure_termination = True
         for pos in self.points_to_visit:
             if pos[0] > agent_pos[0]:
                 required_pos = pos
