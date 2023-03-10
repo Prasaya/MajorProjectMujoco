@@ -91,8 +91,9 @@ class VelocityControl(composer.Task):
             del physics
             sin2, cos2 = np.sin(self._move_angle2), np.cos(self._move_angle2)
             phase2 = self._move_speed_counter2 / self._steps_before_changing_velocity
-            return np.array([self._move_speed, sin2, cos2, phase2])
-        self._task_observables2['target_obs2'] = dm_observable.Generic(
+            # print("For obs2: move_angle2", self._move_angle2)
+            return np.array([self._move_speed2, sin2, cos2, phase2])
+        self._task_observables['target_obs2'] = dm_observable.Generic(
             task_state2)
 
 
@@ -167,13 +168,13 @@ class VelocityControl(composer.Task):
             if pos[0] > agent_pos[0]:
                 required_pos = pos
                 break
-        print("Moving to ", required_pos, "from", agent_pos)
-        source = np.arctan2(
+        source = np.arctan2 (
             required_pos[1] - agent_pos[1], required_pos[0] - agent_pos[0])
         if source < 0:
             source += 2*np.pi
         if agent_pos[0] < 1:
             source = 1.5*np.pi
+        # print("Moving to for agent ", required_pos, "from", agent_pos, "using angle", source, "\n\n")
         # print("Changing source to", np.rad2deg(source), "for moving to",
         #       required_pos, "from", agent_pos)
         # print("Current move angle: ", np.rad2deg(self._move_angle))
@@ -192,15 +193,15 @@ class VelocityControl(composer.Task):
             if pos2[0] > agent_pos2[0]:
                 required_pos2 = pos2
                 break
-        print("Moving to for agent2 ", required_pos2, "from", agent_pos2, "\n\n")
         source2 = np.arctan2(
             required_pos2[1] - agent_pos2[1], required_pos2[0] - agent_pos2[0])
+        # print("Moving to for agent2 ", required_pos2, "from", agent_pos2, "using angle", source2, "\n\n")
         if source2 < 0:
             source2 += 2*np.pi
         if agent_pos2[0] < 1:
             source2 = 1.5*np.pi
         
-        self._move_speed2 = 2
+        self._move_speed2 = 1.7
         self._move_angle2 = source2
         self._move_speed_counter2 = 0
 
