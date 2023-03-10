@@ -15,6 +15,7 @@ from dm_control.mjcf import Physics
 from dm_control.locomotion.walkers import cmu_humanoid, initializers
 from dm_control.locomotion.mocap import cmu_mocap_data, loader
 
+
 class StandInitializer(initializers.WalkerInitializer):
     def __init__(self):
         ref_path = cmu_mocap_data.get_path_for_cmu(version='2020')
@@ -30,6 +31,7 @@ class StandInitializer(initializers.WalkerInitializer):
         del random_state
         utils.set_walker_from_features(physics, walker, self._stand_features)
         mujoco.mj_kinematics(physics.model.ptr, physics.data.ptr)
+
 
 class VelocityControl(composer.Task):
     """
@@ -52,13 +54,14 @@ class VelocityControl(composer.Task):
         self._obstacles = obstacles
         self._walker = walker
         initializer = StandInitializer()
-        self._walker2 = cmu_humanoid.CMUHumanoidPositionControlledV2020(initializer=initializer)
+        self._walker2 = cmu_humanoid.CMUHumanoidPositionControlledV2020(
+            initializer=initializer)
 
         self._arena = arena
         self._walker.create_root_joints(self._arena.attach(self._walker))
 
         self._walker2.create_root_joints(self._arena.attach(self._walker2))
-        
+
         self._max_speed = max_speed
         self._reward_margin = reward_margin
         self._direction_exponent = direction_exponent
@@ -98,13 +101,13 @@ class VelocityControl(composer.Task):
             obs.enabled = True
 
         self._target = self.root_entity.mjcf_model.worldbody.add(
-        'site',
-        name='target',
-        type='sphere',
-        pos=(4., -20., 0.),
-        size=(0.1,),
-        rgba=(0.9, 0.6, 0.6, 1.0),
-        group=0
+            'site',
+            name='target',
+            type='sphere',
+            pos=(4., -20., 0.),
+            size=(0.1,),
+            rgba=(0.9, 0.6, 0.6, 1.0),
+            group=0
         )
 
         self._walker2.observables.add_egocentric_vector(
@@ -112,21 +115,20 @@ class VelocityControl(composer.Task):
             dm_observable.MJCFFeature('pos', self._target),
             origin_callable=lambda physics: physics.bind(self._walker2.root_body).xpos)
 
-
         self.set_timesteps(physics_timestep=physics_timestep,
                            control_timestep=control_timestep)
 
         self.points_to_visit = points_to_visit
         self.dir_index = 0
         self.targets_to_visit = [
-                        [8.723989453495687, -19.965967256207115] ,
-                        [13.286878817066942, -18.248985409929876] ,
-                        [23.298822582065156, -21.50583381097896] ,
-                        [31.277854751071366, -19.614639540097834] ,
-                        [41.35688550725433, -21.561593405886065] ,
-                        [48.082789610543166, -19.918583676147623] ,
-                        [59.96208004613549, -19.87865329343736] ,
-                        ]
+            [8.723989453495687, -19.965967256207115],
+            [13.286878817066942, -18.248985409929876],
+            [23.298822582065156, -21.50583381097896],
+            [31.277854751071366, -19.614639540097834],
+            [41.35688550725433, -21.561593405886065],
+            [48.082789610543166, -19.918583676147623],
+            [59.96208004613549, -19.87865329343736],
+        ]
         # self.targets_to_visit = [
         #                 [4., -27.],
         #                 [4.1, -27.],
@@ -158,7 +160,6 @@ class VelocityControl(composer.Task):
         self.target_index = 0
         self._reward_step_counter = 0
 
-
     @property
     def root_entity(self):
         return self._arena
@@ -170,17 +171,17 @@ class VelocityControl(composer.Task):
     def _is_disallowed_contact(self, contact):
         set1, set2 = self._walker_nonfoot_geomids, self._ground_geomids
         set3, set4 = self._walker2_nonfoot_geomids, self._ground_geomids
-        return ( ( (contact.geom1 in set1 and contact.geom2 in set2) or
-                (contact.geom1 in set2 and contact.geom2 in set1) ) 
+        return (((contact.geom1 in set1 and contact.geom2 in set2) or
+                 (contact.geom1 in set2 and contact.geom2 in set1))
                 # #Changed here
-                and ( (contact.geom1 in set3 and contact.geom2 in set4) or
-                (contact.geom1 in set4 and contact.geom2 in set3) )
-                ) 
+                and ((contact.geom1 in set3 and contact.geom2 in set4) or
+                     (contact.geom1 in set4 and contact.geom2 in set3))
+                )
 
     def _sample_move_speed(self, random_state, physics):
         # Static directions (steps_before_changing_velocity=50 in config.py)
         # source = 0
-        # dir = [np.pi*1.5, 0, 0, np.pi*1/6, 0, 0, 0, 0, np.pi*5/3, np.pi*11/6, 0, 0, np.pi*5/12, np.pi*1/3, np.pi*0.105, 
+        # dir = [np.pi*1.5, 0, 0, np.pi*1/6, 0, 0, 0, 0, np.pi*5/3, np.pi*11/6, 0, 0, np.pi*5/12, np.pi*1/3, np.pi*0.105,
         #        np.pi*35/18, np.pi*11/6, np.pi*1/4, np.pi*1/4, np.pi*1/6, np.pi*7/4, 0]
         # if(self.dir_index < len(dir)):
         #     source = dir[self.dir_index]
@@ -188,7 +189,7 @@ class VelocityControl(composer.Task):
         # else:
         #     source = dir[-1]
         # print("Changing source to ", source)
-    
+
         # Dynamic direction
         agent_pos = physics.named.data.xpos['walker/root']
         agent_pos = np.array([agent_pos[0], agent_pos[1]])
@@ -229,7 +230,7 @@ class VelocityControl(composer.Task):
         self._sample_move_speed(random_state, physics)
 
         self._failure_termination = False
-        
+
         walker_foot_geoms = set(self._walker.ground_contact_geoms)
         walker_nonfoot_geoms = [
             geom for geom in self._walker.mjcf_model.find_all('geom')
@@ -237,7 +238,7 @@ class VelocityControl(composer.Task):
         ]
         self._walker_nonfoot_geomids = set(
             physics.bind(walker_nonfoot_geoms).element_id)
-        
+
         self._walker2.reinitialize_pose(physics, random_state)
         walker2_foot_geoms = set(self._walker2.ground_contact_geoms)
         walker2_nonfoot_geoms = [
@@ -259,7 +260,7 @@ class VelocityControl(composer.Task):
             position=[walker_x, walker_y, 0.],
             quaternion=quat,
             rotate_velocity=True)
-        
+
         self._walker2.shift_pose(
             physics,
             position=[0., -20., 0.],
@@ -308,20 +309,20 @@ class VelocityControl(composer.Task):
         self._move_speed_counter += 1
         if self._move_speed_counter >= self._steps_before_changing_velocity:
             self._sample_move_speed(random_state, physics)
-        
+
         distance = np.linalg.norm(
-        physics.bind(self._target).pos[:2] -
-        physics.bind(self._walker2.root_body).xpos[:2])
+            physics.bind(self._target).pos[:2] -
+            physics.bind(self._walker2.root_body).xpos[:2])
         if distance < 1:
-        # self._reward_step_counter += 1
-        # if (self._reward_step_counter >= 10):
+            # self._reward_step_counter += 1
+            # if (self._reward_step_counter >= 10):
 
             if self.target_index < len(self.targets_to_visit):
                 self._target_spawn_position = self.targets_to_visit[self.target_index]
                 self.target_index += 1
             target_x, target_y = variation.evaluate(
                 self._target_spawn_position, random_state=random_state)
-        
+
             physics.bind(self._target).pos = [target_x, target_y, 0.]
 
             # Reset the number of steps at the target for the moving target.

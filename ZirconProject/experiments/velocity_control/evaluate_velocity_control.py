@@ -13,8 +13,10 @@ from stable_baselines3.common.utils import obs_as_tensor
 from mocapact.sb3 import utils
 from envs import dm_control_wrapper
 from mocapact.distillation import model
+from dm_control.viewer import user_input
 
 from obstacles import Obstacles
+
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("model_root", "transfer/velocity_control/locomotion_low_level",
@@ -52,22 +54,22 @@ CONTROL_TIMESTEP = 0.03
 
 def main(_):
     points_to_visit = [
-        [4.856604200459673, 1.1405764800292657, 0.0] ,
-        [8.330810536821422, 1.8175789650061978, 0.0] ,
-        [11.265259091352707, 2.3142911201247567, 0.0] ,
-        [14.833479475612702, 2.720844434022592, 0.0] ,
-        [17.58882259545875, 1.9530253318653046, 0.0] ,
-        [20.293983131983065, -0.6628960579538852, 0.0] ,
-        [22.545650991227305, -2.1487207751542785, 0.0] ,
-        [25.30971859860803, -1.8308105493138445, 0.0] ,
-        [30.266349561146765, 0.4278969101997805, 0.0] ,
-        [33.78896424290792, 1.1059375416202308, 0.0] ,
-        [38.015766155232726, 2.1912311760347682, 0.0] ,
-        [41.46998771254839, 2.522453235730368, 0.0] ,
-        [44.29118600078721, 1.6933532995618719, 0.0] ,
-        [48.76113778514778, 0.193797807155441, 0.0] ,
-        [54.98101891203576, 0.12631603728216767, 0.0] ,
-        [61.22639217981167, 0.19589136979271338, 0.0] ,
+        [4.856604200459673, 1.1405764800292657, 0.0],
+        [8.330810536821422, 1.8175789650061978, 0.0],
+        [11.265259091352707, 2.3142911201247567, 0.0],
+        [14.833479475612702, 2.720844434022592, 0.0],
+        [17.58882259545875, 1.9530253318653046, 0.0],
+        [20.293983131983065, -0.6628960579538852, 0.0],
+        [22.545650991227305, -2.1487207751542785, 0.0],
+        [25.30971859860803, -1.8308105493138445, 0.0],
+        [30.266349561146765, 0.4278969101997805, 0.0],
+        [33.78896424290792, 1.1059375416202308, 0.0],
+        [38.015766155232726, 2.1912311760347682, 0.0],
+        [41.46998771254839, 2.522453235730368, 0.0],
+        [44.29118600078721, 1.6933532995618719, 0.0],
+        [48.76113778514778, 0.193797807155441, 0.0],
+        [54.98101891203576, 0.12631603728216767, 0.0],
+        [61.22639217981167, 0.19589136979271338, 0.0],
     ]
 
     env_ctor = dm_control_wrapper.DmControlWrapper.make_env_constructor(
@@ -128,6 +130,22 @@ def main(_):
     if FLAGS.visualize:
         viewer_app = application.Application(
             title='Humanoid Task', width=1024, height=768)
+
+        def custom_handler():
+            task = env._task
+            print(task.__class__)
+            body_id, position = viewer_app._viewer.camera.raycast(
+                viewer_app._viewport, viewer_app._viewer._mouse.position)
+            if position is not None:
+                print(list(position), ',')
+            else:
+                print(position)
+            env.points_to_visit.append(position)
+            print(env.physics.model.id2name(body_id, 'geom'))
+
+        viewer_app.register_callback(
+            custom_handler, (user_input.MOUSE_BUTTON_LEFT, user_input.MOD_SHIFT))
+
         viewer_app.launch(environment_loader=env.dm_env, policy=policy_fn)
 
 
