@@ -50,6 +50,7 @@ class VelocityControl(composer.Task):
         control_timestep=0.03,
         obstacles=None,
         points_to_visit=[],
+        points_to_visit2=[],
     ):
         self._obstacles = obstacles
         self._walker = walker
@@ -79,6 +80,21 @@ class VelocityControl(composer.Task):
             return np.array([self._move_speed, sin, cos, phase])
         self._task_observables['target_obs'] = dm_observable.Generic(
             task_state)
+        
+
+        self._move_speed2 = 0.
+        self._move_angle2 = 0.
+        self._move_speed_counter2 = 0.
+        self._task_observables2 = collections.OrderedDict()
+
+        def task_state2(physics):
+            del physics
+            sin2, cos2 = np.sin(self._move_angle2), np.cos(self._move_angle2)
+            phase2 = self._move_speed_counter2 / self._steps_before_changing_velocity
+            return np.array([self._move_speed, sin2, cos2, phase2])
+        self._task_observables2['target_obs2'] = dm_observable.Generic(
+            task_state2)
+
 
         enabled_observables = []
         enabled_observables += self._walker.observables.proprioception
@@ -96,69 +112,22 @@ class VelocityControl(composer.Task):
         enabled_observables2 += self._walker2.observables.kinematic_sensors
         enabled_observables2 += self._walker2.observables.dynamic_sensors
         enabled_observables2.append(self._walker2.observables.sensors_touch)
-        enabled_observables2 += list(self._task_observables.values())
+        enabled_observables2.append(self._walker2.observables.torso_xvel)
+        enabled_observables2.append(self._walker2.observables.torso_yvel)
+        enabled_observables2 += list(self._task_observables2.values())
         for obs in enabled_observables2:
             obs.enabled = True
-
-        self._target = self.root_entity.mjcf_model.worldbody.add(
-            'site',
-            name='target',
-            type='sphere',
-            pos=(4., -20., 0.),
-            size=(0.1,),
-            rgba=(0.9, 0.6, 0.6, 1.0),
-            group=0
-        )
-
-        self._walker2.observables.add_egocentric_vector(
-            'target',
-            dm_observable.MJCFFeature('pos', self._target),
-            origin_callable=lambda physics: physics.bind(self._walker2.root_body).xpos)
 
         self.set_timesteps(physics_timestep=physics_timestep,
                            control_timestep=control_timestep)
 
         self.points_to_visit = points_to_visit
         self.dir_index = 0
-        self.targets_to_visit = [
-            [8.723989453495687, -19.965967256207115],
-            [13.286878817066942, -18.248985409929876],
-            [23.298822582065156, -21.50583381097896],
-            [31.277854751071366, -19.614639540097834],
-            [41.35688550725433, -21.561593405886065],
-            [48.082789610543166, -19.918583676147623],
-            [59.96208004613549, -19.87865329343736],
-        ]
-        # self.targets_to_visit = [
-        #                 [4., -27.],
-        #                 [4.1, -27.],
-        #                 [4.2, -27.],
-        #                 [4.3, -27.],
-        #                 [4.4, -27.],
-        #                 [4.5, -27.],
-        #                 [4.6, -27.],
-        #                 [4.7, -27.],
-        #                 [4.8, -27.],
-        #                 [4.9, -27.],
-        #                 [5., -27.],
-        #                 [5.1, -27.],
-        #                 [5.2, -27.],
-        #                 [5.3, -27.],
-        #                 [5.4, -27.],
-        #                 [5.5, -27.],
-        #                 [5.6, -27.],
-        #                 [5.7, -27.],
-        #                 [5.8, -27.],
-        #                 [5.9, -27.],
-        #                 [6., -27.],
-        #                 [6.1, -27.],
-        #                 [6.2, -27.],
-        #                 [6.3, -27.],
-        #                 [6.4, -27.],
-        #                 [6.5, -27.],
-        #                 ]
-        self.target_index = 0
         self._reward_step_counter = 0
+
+        self.points_to_visit2 = points_to_visit2
+        self.dir_index2 = 0
+        self._reward_step_counter2 = 0
 
     @property
     def root_entity(self):
@@ -211,9 +180,28 @@ class VelocityControl(composer.Task):
 
         # self._move_speed = random_state.uniform(high=self._max_speed)
         # self._move_angle = random_state.uniform(high=2*np.pi)
-        self._move_speed = 3
+        self._move_speed = 2
         self._move_angle = source
         self._move_speed_counter = 0
+
+        agent_pos2 = physics.named.data.xpos['walker_1/root']
+        agent_pos2 = np.array([agent_pos2[0], agent_pos2[1]])
+        required_pos2 = self.points_to_visit2[0]
+        for pos in self.points_to_visit2:
+            if pos[0] > agent_pos2[0]:
+                required_pos2 = pos
+                break
+        print("Moving to for agent2 ", required_pos2, "from", agent_pos2)
+        source2 = np.arctan2(
+            required_pos2[1] - agent_pos2[1], required_pos2[0] - agent_pos2[0])
+        if source2 < 0:
+            source2 += 2*np.pi
+        if agent_pos2[0] < 1:
+            source2 = 1.5*np.pi
+        
+        self._move_speed2 = 2
+        self._move_angle2 = source2
+        self._move_speed_counter2 = 0
 
     def should_terminate_episode(self, physics):
         del physics
@@ -285,14 +273,6 @@ class VelocityControl(composer.Task):
             angle_reward = ((dot + 1) / 2)**self._direction_exponent
 
         reward = speed_reward * angle_reward
-        # return 0
-
-        # distance = np.linalg.norm(
-        # physics.bind(self._target).pos[:2] -
-        # physics.bind(self._walker.root_body).xpos[:2])
-        # if distance < 1:
-        #     reward = 1.
-        # self._reward_step_counter += 1
 
         return reward
 
@@ -310,21 +290,3 @@ class VelocityControl(composer.Task):
         self._move_speed_counter += 1
         if self._move_speed_counter >= self._steps_before_changing_velocity:
             self._sample_move_speed(random_state, physics)
-
-        distance = np.linalg.norm(
-            physics.bind(self._target).pos[:2] -
-            physics.bind(self._walker2.root_body).xpos[:2])
-        if distance < 1:
-            # self._reward_step_counter += 1
-            # if (self._reward_step_counter >= 10):
-
-            if self.target_index < len(self.targets_to_visit):
-                self._target_spawn_position = self.targets_to_visit[self.target_index]
-                self.target_index += 1
-            target_x, target_y = variation.evaluate(
-                self._target_spawn_position, random_state=random_state)
-
-            physics.bind(self._target).pos = [target_x, target_y, 0.]
-
-            # Reset the number of steps at the target for the moving target.
-            self._reward_step_counter = 0

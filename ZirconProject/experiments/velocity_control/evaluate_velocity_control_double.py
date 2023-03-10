@@ -28,7 +28,7 @@ flags.DEFINE_float("max_embed", 3., "Maximum embed")
 task_file = "ZirconProject/experiments/velocity_control/config.py"
 config_flags.DEFINE_config_file(
     "task", f"{task_file}:velocity_control_double", "Task")
-flags.DEFINE_integer("episode_steps", 1200,
+flags.DEFINE_integer("episode_steps", 2400,
                      "Number of time steps in an episode")
 
 # Visualization hyperparameters
@@ -57,21 +57,30 @@ CONTROL_TIMESTEP = 0.03
 
 def main(_):
     points_to_visit = [
-        [5.343594072495911, -0.06450200848820486, 0.0],
-        [11.00716806756759, 1.1302856872944567, 0.0],
-        [13.389306713613284, 1.6707850075910393, 0.0],
-        [22.793781341717782, -0.8232869220699008, 0.0],
-        [26.731624831311223, -0.34696348592652626, 0.0],
-        [31.29652491550266, 0.38326157610432077, 0.0],
-        [35.084119799128324, -0.20973821450278862, 0.0],
-        [40.881537762590234, -1.0750218324270087, 0.0],
-        [45.46529989506245, -0.5193909366499518, 0.0],
-        [52.03650532236615, 0.14935974006941066, 0.0],
-        [60.53305148347309, 0.11416436341153968, 0.0],
-        [64.95333560812519, 0.15953857811786776, 0.0],
+        [7.611853438163575, -0.5073105305616501, 7.105427357601002e-15] ,
+        [12.861446781298447, 2.3271483232732653, -7.105427357601002e-15] ,
+        [17.325426497840677, 1.1029807763040917, -7.105427357601002e-15] ,
+        [22.963621618651896, -2.3824328845690754, -7.105427357601002e-15] ,
+        [27.20037137504983, -0.7906175779270974, 0.0] ,
+        [31.09778261406389, 0.9390053147846729, 0.0] ,
+        [35.07275869070873, 0.40137054658193705, 7.105427357601002e-15] ,
+        [41.92435270948895, -2.667303181056237, 0.0] ,
+        [47.74156407708054, -3.0610189835335184, 0.0] ,
+        [59.45508018705748, -0.4856270377874772, 0.0] ,
+        [65.89125074654154, -0.6719150763542157, 7.105427357601002e-15] ,
     ]
-    points_to_visit = [
-        [1.0, 0.0, 0.0],
+    points_to_visit2 = [
+        [8.459533714357882, -20.601235216654704, 0.0] ,
+        [12.948384942549517, -18.072087396979345, 0.0] ,
+        [16.85135137371646, -18.36018018044958, 0.0] ,
+        [22.898667818265924, -22.861297006564726, 0.0] ,
+        [27.857167204500513, -21.533089375771045, 0.0] ,
+        [31.481044283597583, -19.204959105868376, 0.0] ,
+        [36.10544475527765, -19.631789512272466, 0.0] ,
+        [42.46201862328934, -23.52524543481887, 0.0] ,
+        [53.146555706168286, -22.43094726605406, 0.0] ,
+        [64.85964375781808, -20.32794733744174, 0.0] ,
+        [68.38786047992997, -19.852334870654296, 0.0] ,
     ]
 
     env_ctor = dm_control_wrapper.DmControlWrapper.make_env_constructor(
@@ -81,6 +90,7 @@ def main(_):
         control_timestep=CONTROL_TIMESTEP,
         obstacles=Obstacles(),
         points_to_visit=points_to_visit,
+        points_to_visit2=points_to_visit2,
         **FLAGS.task.config
     )
     environment_kwargs = dict(
@@ -104,7 +114,9 @@ def main(_):
         if not k.startswith('walker_1/'):
             obs1[k] = v
     for k, v in env.observation_space.items():
-        if not k.startswith('walker/') and not k.endswith('target_obs'):
+        if k.startswith('target_obs2'):
+            obs2[k.replace('target_obs2', 'target_obs')] = v
+        elif not k.startswith('walker/'):
             obs2[k.replace('walker_1/', 'walker/')] = v
 
     # Set up model
@@ -115,7 +127,7 @@ def main(_):
     )
 
     high_level_model2 = utils.load_policy(
-        FLAGS.model_root2,
+        FLAGS.model_root,
         list(obs2.keys()),
         device=FLAGS.device
     )
@@ -139,7 +151,9 @@ def main(_):
             if not k.startswith('walker_1/'):
                 obs1[k] = v
         for k, v in obs.items():
-            if not k.startswith('walker/') and not k.endswith('target_obs'):
+            if k.startswith('target_obs2'):
+                obs2[k.replace('target_obs2', 'target_obs')] = v
+            elif not k.startswith('walker/'):
                 obs2[k.replace('walker_1/', 'walker/')] = v
 
         if low_level_policy:
@@ -176,8 +190,8 @@ def main(_):
                 print(list(position), ',')
             else:
                 print(position)
-            task.points_to_visit.append(position)
-            print(env.physics.model.id2name(body_id, 'geom'))
+            # task.points_to_visit.append(position)
+            # print(env.physics.model.id2name(body_id, 'geom'))
 
         viewer_app.register_callback(
             custom_handler, (user_input.MOUSE_BUTTON_LEFT, user_input.MOD_SHIFT))
