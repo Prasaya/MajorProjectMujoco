@@ -21,5 +21,5 @@ class Application(application.Application):
                 print(list(position), ',')
             else:
                 print(position)
-            print(self._environment.physics.model.id2name(body_id, 'geom'))
+            # print(self._environment.physics.model.id2name(body_id, 'geom'))
         self._viewer._input_map.bind(custom_handler, _INSERT_TARGET)

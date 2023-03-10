@@ -101,7 +101,7 @@ class VelocityControl(composer.Task):
         'site',
         name='target',
         type='sphere',
-        pos=(4., -27., 0.),
+        pos=(4., -20., 0.),
         size=(0.1,),
         rgba=(0.9, 0.6, 0.6, 1.0),
         group=0
@@ -118,14 +118,14 @@ class VelocityControl(composer.Task):
 
         self.points_to_visit = points_to_visit
         self.dir_index = 0
-        self.targets_to_visit = [ 
-                        [4., -27.],
-                        [6.4, -27.16],
-                        [7.6, -25.26],
-                        [9.5, -26.56],
-                        [11, -24.66],
-                        [15.645, -25.85],
-                        [20.3, -26.34] 
+        self.targets_to_visit = [
+                        [8.723989453495687, -19.965967256207115] ,
+                        [13.286878817066942, -18.248985409929876] ,
+                        [23.298822582065156, -21.50583381097896] ,
+                        [31.277854751071366, -19.614639540097834] ,
+                        [41.35688550725433, -21.561593405886065] ,
+                        [48.082789610543166, -19.918583676147623] ,
+                        [59.96208004613549, -19.87865329343736] ,
                         ]
         # self.targets_to_visit = [
         #                 [4., -27.],
@@ -209,7 +209,7 @@ class VelocityControl(composer.Task):
 
         # self._move_speed = random_state.uniform(high=self._max_speed)
         # self._move_angle = random_state.uniform(high=2*np.pi)
-        self._move_speed = 2
+        self._move_speed = 3
         self._move_angle = source
         self._move_speed_counter = 0
 
@@ -262,7 +262,7 @@ class VelocityControl(composer.Task):
         
         self._walker2.shift_pose(
             physics,
-            position=[0., -25., 0.],
+            position=[0., -20., 0.],
             quaternion=quat,
             rotate_velocity=True)
 

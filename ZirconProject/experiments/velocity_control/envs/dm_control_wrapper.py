@@ -172,7 +172,7 @@ class DmControlWrapper(core.Env):
 
     def _get_arena(self, arena_size):
         if self.use_walls:
-            return floor_with_mesh.FloorWithMesh(arena_size)
+            return floor_with_mesh_double.FloorWithMesh(arena_size)
         return floors.Floor(arena_size)
 
     def _create_observation_space(self) -> spaces.Dict:

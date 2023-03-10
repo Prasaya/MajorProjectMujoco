@@ -228,110 +228,27 @@ class FloorWithMesh(Arena):
                                       mesh='table',
                                       pos=[33, -4.25, 0],
                                       size=[1, 1, 1])
+        
+        # Fourth row of tables
+        self.mjcf_model.worldbody.add('geom',
+                                      type='mesh',
+                                      name="table_4_1",
+                                      mesh='table',
+                                      pos=[43, -0.75, 0],
+                                      size=[1, 1, 1])
+        self.mjcf_model.worldbody.add('geom',
+                                      type='mesh',
+                                      name="table_4_2",
+                                      mesh='table',
+                                      pos=[43, 1, 0],
+                                      size=[1, 1, 1])
+        self.mjcf_model.worldbody.add('geom',
+                                      type='mesh',
+                                      name="table_4_3",
+                                      mesh='table',
+                                      pos=[43, 2.75, 0],
+                                      size=[1, 1, 1])
 
-        # Random placement of chairs
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_1",
-                                      mesh='chair',
-                                      pos=[36, 3, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_2",
-                                      mesh='chairR',
-                                      pos=[37, 0, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_3",
-                                      mesh='chairL',
-                                      pos=[36, -1, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_4",
-                                      mesh='chairF',
-                                      pos=[35, -2, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_5",
-                                      mesh='chair',
-                                      pos=[38, 1, 0],
-                                      size=[1, 1, 1])
-        # self.mjcf_model.worldbody.add('geom',
-        #                               type='mesh',
-        #                               name="chair_rand_6",
-        #                               mesh='chairF',
-        #                               pos=[38, 5, 0],
-        #                               size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_7",
-                                      mesh='chair',
-                                      pos=[39, 4, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_8",
-                                      mesh='chairF',
-                                      pos=[40, 1, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_9",
-                                      mesh='chairL',
-                                      pos=[41, 2, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_10",
-                                      mesh='chair',
-                                      pos=[44, 3, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_11",
-                                      mesh='chairL',
-                                      pos=[44, -1, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_12",
-                                      mesh='chair',
-                                      pos=[43, 0, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_13",
-                                      mesh='chairF',
-                                      pos=[44.5, 0.25, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_14",
-                                      mesh='chairF',
-                                      pos=[45, 4, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_15",
-                                      mesh='chairR',
-                                      pos=[47, 4, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_16",
-                                      mesh='chairR',
-                                      pos=[48, 3, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_17",
-                                      mesh='chairR',
-                                      pos=[49, 2, 0],
-                                      size=[1, 1, 1])
         # Mesh of obtacles for second agent
         # First row of chairs
         self.mjcf_model.worldbody.add('geom',
@@ -440,109 +357,25 @@ class FloorWithMesh(Arena):
                                       mesh='table',
                                       pos=[33, -24.25, 0],
                                       size=[1, 1, 1])
-
-        # Random placement of chairs
+        
+        # Fourth row of tables
         self.mjcf_model.worldbody.add('geom',
                                       type='mesh',
-                                      name="chair_rand_1-2",
-                                      mesh='chair',
-                                      pos=[36, -17, 0],
+                                      name="table_4_1-2",
+                                      mesh='table',
+                                      pos=[43, -20.75, 0],
                                       size=[1, 1, 1])
         self.mjcf_model.worldbody.add('geom',
                                       type='mesh',
-                                      name="chair_rand_2-2",
-                                      mesh='chairR',
-                                      pos=[37, -20, 0],
+                                      name="table_4_2-2",
+                                      mesh='table',
+                                      pos=[43, -19, 0],
                                       size=[1, 1, 1])
         self.mjcf_model.worldbody.add('geom',
                                       type='mesh',
-                                      name="chair_rand_3-2",
-                                      mesh='chairL',
-                                      pos=[36, -21, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_4-2",
-                                      mesh='chairF',
-                                      pos=[35, -22, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_5-2",
-                                      mesh='chair',
-                                      pos=[38, -19, 0],
-                                      size=[1, 1, 1])
-        # self.mjcf_model.worldbody.add('geom',
-        #                               type='mesh',
-        #                               name="chair_rand_6-2",
-        #                               mesh='chairF',
-        #                               pos=[38, 5, 0],
-        #                               size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_7-2",
-                                      mesh='chair',
-                                      pos=[39, -16, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_8-2",
-                                      mesh='chairF',
-                                      pos=[40, -19, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_9-2",
-                                      mesh='chairL',
-                                      pos=[41, -18, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_10-2",
-                                      mesh='chair',
-                                      pos=[44, -17, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_11-2",
-                                      mesh='chairL',
-                                      pos=[44, -21, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_12-2",
-                                      mesh='chair',
-                                      pos=[43, -20, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_13-2",
-                                      mesh='chairF',
-                                      pos=[44.5, -19.75, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_14-2",
-                                      mesh='chairF',
-                                      pos=[45, -16, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_15-2",
-                                      mesh='chairR',
-                                      pos=[47, -16, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_16-2",
-                                      mesh='chairR',
-                                      pos=[48, -17, 0],
-                                      size=[1, 1, 1])
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name="chair_rand_17-2",
-                                      mesh='chairR',
-                                      pos=[49, -18, 0],
+                                      name="table_4_3-2",
+                                      mesh='table',
+                                      pos=[43, -17.25, 0],
                                       size=[1, 1, 1])
 
         # Choose the FOV so that the floor always fits nicely within the frame
