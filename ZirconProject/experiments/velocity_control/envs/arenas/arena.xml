@@ -12,8 +12,10 @@
     <mesh name="roof_wall2" file="../../../../../mesh/roof_wall2.obj"/>
     <mesh name="roof_wall3" file="../../../../../mesh/roof_wall3.obj"/>
     <mesh name="roof_wall4" file="../../../../../mesh/roof_wall4.obj"/>
-    <mesh name="AC_road1" file="../../../../../mesh/AC_road1.obj"/>
-    <mesh name="AC_road2" file="../../../../../mesh/AC_road2.obj"/>
+    <mesh name="AC_road1" file="../../../../../mesh/AC_road_1.obj"/>
+    <mesh name="AC_road2" file="../../../../../mesh/AC_road_2.obj"/>
+    <texture name="skybox" type="skybox" builtin="flat" rgb1="0.9 0.9 0.9" rgb2="0 0 0"
+               width="800" height="800"/>
   </asset>
   <visual>
     <map znear='0.01'/>

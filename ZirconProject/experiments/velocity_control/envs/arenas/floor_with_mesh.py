@@ -48,7 +48,7 @@ class FloorWithMesh(Arena):
             name='groundplane',
             material=self._ground_material,
             # size=[1,1,1]
-            group=2,
+            group=1,
             size=list(size) + [_GROUNDPLANE_QUAD_SIZE]
         )
 
