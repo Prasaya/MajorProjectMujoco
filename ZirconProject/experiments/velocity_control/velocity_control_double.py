@@ -130,6 +130,26 @@ class VelocityControl(composer.Task):
         self.dir_index2 = 0
         self._reward_step_counter2 = 0
 
+        self._target = self.root_entity.mjcf_model.worldbody.add(
+            'site',
+            name='target',
+            type='sphere',
+            pos=points_to_visit[0],
+            size=(0.1,),
+            rgba=(0.9, 0.6, 0.6, 1.0),
+            group=1
+            )
+
+        self._target2 = self.root_entity.mjcf_model.worldbody.add(
+            'site',
+            name='target2',
+            type='sphere',
+            pos=points_to_visit2[0],
+            size=(0.1,),
+            rgba=(0.9, 0.6, 0.6, 1.0),
+            group=2
+            )
+
     @property
     def root_entity(self):
         return self._arena
@@ -168,6 +188,10 @@ class VelocityControl(composer.Task):
             if pos[0] > agent_pos[0]:
                 required_pos = pos
                 break
+
+        physics.bind(self._target).pos = [
+            required_pos[0], required_pos[1], 0.0]
+        
         source = np.arctan2 (
             required_pos[1] - agent_pos[1], required_pos[0] - agent_pos[0])
         if source < 0:
@@ -193,6 +217,9 @@ class VelocityControl(composer.Task):
             if pos2[0] > agent_pos2[0]:
                 required_pos2 = pos2
                 break
+
+        physics.bind(self._target2).pos = [
+            required_pos2[0], required_pos2[1], 0.0]
         source2 = np.arctan2(
             required_pos2[1] - agent_pos2[1], required_pos2[0] - agent_pos2[0])
         # print("Moving to for agent2 ", required_pos2, "from", agent_pos2, "using angle", source2, "\n\n")
