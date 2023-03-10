@@ -18,6 +18,7 @@ from dm_control import composer
 from dm_control.locomotion.arenas import floors
 from .arenas import floor_with_walls
 from .arenas import floor_with_mesh
+from .arenas import floor_with_mesh_double
 from dm_control.locomotion.mocap import cmu_mocap_data
 from dm_control.locomotion.mocap import loader
 from dm_control.locomotion.tasks.reference_pose import tracking
