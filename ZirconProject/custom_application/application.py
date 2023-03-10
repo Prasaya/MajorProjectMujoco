@@ -17,5 +17,9 @@ class Application(application.Application):
         def custom_handler():
             body_id, position = self._viewer.camera.raycast(
                 self._viewport, self._viewer._mouse.position)
-            print(list(position), ',')
+            if position is not None:
+                print(list(position), ',')
+            else:
+                print(position)
+            print(self._environment.physics.model.id2name(body_id, 'geom'))
         self._viewer._input_map.bind(custom_handler, _INSERT_TARGET)

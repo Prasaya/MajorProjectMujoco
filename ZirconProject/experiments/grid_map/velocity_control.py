@@ -83,17 +83,6 @@ class VelocityControl(composer.Task):
 
     def _is_disallowed_contact(self, contact):
         set1, set2 = self._walker_nonfoot_geomids, self._ground_geomids
-        # set3 = set(self._walker_geoms)
-        # set3.add(self._ground_geomids)
-
-        set3 = self._walker_geoms.union(self._ground_geomids)
-
-        return (
-        (contact.geom1 in set3 and contact.geom2 not in set3) or
-        (contact.geom1 not in set3 and contact.geom2 not in set3) or
-        (contact.geom1 in set1 and contact.geom2 in set2) or
-        (contact.geom1 in set2 and contact.geom2 in set1)
-        )
         return ((contact.geom1 in set1 and contact.geom2 in set2) or
                 (contact.geom1 in set2 and contact.geom2 in set1))
 
@@ -113,8 +102,6 @@ class VelocityControl(composer.Task):
         agent_pos = physics.named.data.xpos['walker/root']
         agent_pos = np.array([agent_pos[0], agent_pos[1]])
         required_pos = self.points_to_visit[0]
-        if agent_pos[0] > self.points_to_visit[-1][0]:
-            self._failure_termination = True
         for pos in self.points_to_visit:
             if pos[0] > agent_pos[0]:
                 required_pos = pos
@@ -151,12 +138,6 @@ class VelocityControl(composer.Task):
 
         self._failure_termination = False
         walker_foot_geoms = set(self._walker.ground_contact_geoms)
-        walker_geoms = [
-            geom for geom in self._walker.mjcf_model.find_all('geom')
-        ]
-        self._walker_geoms = set(
-        physics.bind(walker_geoms).element_id
-        )
         walker_nonfoot_geoms = [
             geom for geom in self._walker.mjcf_model.find_all('geom')
             if geom not in walker_foot_geoms
@@ -193,17 +174,6 @@ class VelocityControl(composer.Task):
             angle_reward = ((dot + 1) / 2)**self._direction_exponent
 
         reward = speed_reward * angle_reward
-
-        # print("\n\nReward before reward1 is ", reward)
-        distance = np.linalg.norm(
-            [70, 0] -
-            physics.bind(self._walker.root_body).xpos[:2])
-        norm_distance = distance / 72
-        reward1 = 1 - norm_distance
-        # reward += reward1
-        # print("\nreward1 is ", reward1)
-        # print("\nReward after reward1 is ", reward, "\n")
-
         return reward
 
     def before_step(self, physics, action, random_state):
@@ -219,3 +189,15 @@ class VelocityControl(composer.Task):
         self._move_speed_counter += 1
         if self._move_speed_counter >= self._steps_before_changing_velocity:
             self._sample_move_speed(random_state, physics)
+
+        # print(physics.data.ncon, len(physics.data.contact))
+        # geom1 = physics.data.contact[0].geom1
+        # geom2 = physics.data.contact[0].geom2
+        # # print(id2name(geom1, 'geom'), id2name(geom2, 'geom'))
+
+        # print(physics.model.id2name(geom1, 'geom'),
+        #       physics.model.id2name(geom2, 'geom'))
+
+        # contacts = [(physics.model.id2name(c.geom1, 'geom'), physics.model.id2name(
+        #     c.geom2, 'geom')) for c in physics.data.contact]
+        # print(contacts)
