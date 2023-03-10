@@ -198,6 +198,7 @@ class VelocityControl(composer.Task):
             if pos[0] > agent_pos[0]:
                 required_pos = pos
                 break
+        print("Moving to ", required_pos, "from", agent_pos)
         source = np.arctan2(
             required_pos[1] - agent_pos[1], required_pos[0] - agent_pos[0])
         if source < 0:

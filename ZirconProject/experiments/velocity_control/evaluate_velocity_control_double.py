@@ -15,13 +15,14 @@ from stable_baselines3.common.utils import obs_as_tensor
 from mocapact.sb3 import utils
 from envs import dm_control_wrapper
 from mocapact.distillation import model
+from dm_control.viewer import user_input
 
 from obstacles import Obstacles
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("model_root", "transfer/velocity_control/locomotion_low_level",
                     "Directory where policy is stored")
-flags.DEFINE_string("model_root2", "transfer/go_to_target/locomotion_low_level", 
+flags.DEFINE_string("model_root2", "transfer/go_to_target/locomotion_low_level",
                     "Directory where second policy is stored")
 flags.DEFINE_float("max_embed", 3., "Maximum embed")
 task_file = "ZirconProject/experiments/velocity_control/config.py"
@@ -56,18 +57,21 @@ CONTROL_TIMESTEP = 0.03
 
 def main(_):
     points_to_visit = [
-        [5.343594072495911, -0.06450200848820486, 0.0] ,
-        [11.00716806756759, 1.1302856872944567, 0.0] ,
-        [13.389306713613284, 1.6707850075910393, 0.0] ,
-        [22.793781341717782, -0.8232869220699008, 0.0] ,
-        [26.731624831311223, -0.34696348592652626, 0.0] ,
-        [31.29652491550266, 0.38326157610432077, 0.0] ,
-        [35.084119799128324, -0.20973821450278862, 0.0] ,
-        [40.881537762590234, -1.0750218324270087, 0.0] ,
-        [45.46529989506245, -0.5193909366499518, 0.0] ,
-        [52.03650532236615, 0.14935974006941066, 0.0] ,
-        [60.53305148347309, 0.11416436341153968, 0.0] ,
-        [64.95333560812519, 0.15953857811786776, 0.0] ,
+        [5.343594072495911, -0.06450200848820486, 0.0],
+        [11.00716806756759, 1.1302856872944567, 0.0],
+        [13.389306713613284, 1.6707850075910393, 0.0],
+        [22.793781341717782, -0.8232869220699008, 0.0],
+        [26.731624831311223, -0.34696348592652626, 0.0],
+        [31.29652491550266, 0.38326157610432077, 0.0],
+        [35.084119799128324, -0.20973821450278862, 0.0],
+        [40.881537762590234, -1.0750218324270087, 0.0],
+        [45.46529989506245, -0.5193909366499518, 0.0],
+        [52.03650532236615, 0.14935974006941066, 0.0],
+        [60.53305148347309, 0.11416436341153968, 0.0],
+        [64.95333560812519, 0.15953857811786776, 0.0],
+    ]
+    points_to_visit = [
+        [1.0, 0.0, 0.0],
     ]
 
     env_ctor = dm_control_wrapper.DmControlWrapper.make_env_constructor(
@@ -92,7 +96,6 @@ def main(_):
         act_noise=0.0,
     )
 
-
     obs = env.observation_space
     obs1 = gym_dict.Dict()
     obs2 = gym_dict.Dict()
@@ -101,9 +104,8 @@ def main(_):
         if not k.startswith('walker_1/'):
             obs1[k] = v
     for k, v in env.observation_space.items():
-        if not k.startswith('walker/')and not k.endswith('target_obs') :
+        if not k.startswith('walker/') and not k.endswith('target_obs'):
             obs2[k.replace('walker_1/', 'walker/')] = v
-
 
     # Set up model
     high_level_model = utils.load_policy(
@@ -130,7 +132,7 @@ def main(_):
     @torch.no_grad()
     def policy_fn(time_step):
         obs = env.get_observation(time_step)
-        
+
         obs1 = {}
         obs2 = {}
         for k, v in obs.items():
@@ -165,6 +167,21 @@ def main(_):
     if FLAGS.visualize:
         viewer_app = application.Application(
             title='Humanoid Task', width=1024, height=768)
+
+        def custom_handler():
+            task = env._task
+            body_id, position = viewer_app._viewer.camera.raycast(
+                viewer_app._viewport, viewer_app._viewer._mouse.position)
+            if position is not None:
+                print(list(position), ',')
+            else:
+                print(position)
+            task.points_to_visit.append(position)
+            print(env.physics.model.id2name(body_id, 'geom'))
+
+        viewer_app.register_callback(
+            custom_handler, (user_input.MOUSE_BUTTON_LEFT, user_input.MOD_SHIFT))
+
         viewer_app.launch(environment_loader=env.dm_env, policy=policy_fn)
 
 
