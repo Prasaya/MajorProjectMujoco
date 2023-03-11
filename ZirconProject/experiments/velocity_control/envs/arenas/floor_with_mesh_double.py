@@ -122,12 +122,12 @@ class FloorWithMesh(Arena):
 
         # Mesh of obtacles
         # First row of chairs
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name='chair_1_1',
-                                      mesh='chair',
-                                      pos=[15, 1, 0],
-                                      size=[1, 1, 1])
+        # self.mjcf_model.worldbody.add('geom',
+        #                               type='mesh',
+        #                               name='chair_1_1',
+        #                               mesh='chair',
+        #                               pos=[15, 1, 0],
+        #                               size=[1, 1, 1])
         self.mjcf_model.worldbody.add('geom',
                                       type='mesh',
                                       name='chair_1_2',
@@ -172,12 +172,12 @@ class FloorWithMesh(Arena):
         #                               size=[1, 1, 1])
 
         # Second row of chairs
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name='chair_2_1',
-                                      mesh='chair',
-                                      pos=[25, -1, 0],
-                                      size=[1, 1, 1])
+        # self.mjcf_model.worldbody.add('geom',
+        #                               type='mesh',
+        #                               name='chair_2_1',
+        #                               mesh='chair',
+        #                               pos=[25, -1, 0],
+        #                               size=[1, 1, 1])
         self.mjcf_model.worldbody.add('geom',
                                       type='mesh',
                                       name='chair_2_2',
@@ -251,12 +251,12 @@ class FloorWithMesh(Arena):
 
         # Mesh of obtacles for second agent
         # First row of chairs
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name='chair_1_1-2',
-                                      mesh='chair',
-                                      pos=[15, -19, 0],
-                                      size=[1, 1, 1])
+        # self.mjcf_model.worldbody.add('geom',
+        #                               type='mesh',
+        #                               name='chair_1_1-2',
+        #                               mesh='chair',
+        #                               pos=[15, -19, 0],
+        #                               size=[1, 1, 1])
         self.mjcf_model.worldbody.add('geom',
                                       type='mesh',
                                       name='chair_1_2-2',
@@ -301,12 +301,12 @@ class FloorWithMesh(Arena):
         #                               size=[1, 1, 1])
 
         # Second row of chairs
-        self.mjcf_model.worldbody.add('geom',
-                                      type='mesh',
-                                      name='chair_2_1-2',
-                                      mesh='chair',
-                                      pos=[25, -21, 0],
-                                      size=[1, 1, 1])
+        # self.mjcf_model.worldbody.add('geom',
+        #                               type='mesh',
+        #                               name='chair_2_1-2',
+        #                               mesh='chair',
+        #                               pos=[25, -21, 0],
+        #                               size=[1, 1, 1])
         self.mjcf_model.worldbody.add('geom',
                                       type='mesh',
                                       name='chair_2_2-2',

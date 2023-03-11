@@ -205,7 +205,7 @@ class VelocityControl(composer.Task):
 
         # self._move_speed = random_state.uniform(high=self._max_speed)
         # self._move_angle = random_state.uniform(high=2*np.pi)
-        self._move_speed = 2
+        self._move_speed = 1.9
         self._move_angle = source
         self._move_speed_counter = 0
 
